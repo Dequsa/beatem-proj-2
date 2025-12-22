@@ -1,5 +1,26 @@
-tmain.help
-main.exe
+# --- Build Outputs (Trash) ---
+# The actual executable
+*.exe
+*.dll
+
+# Visual Studio Intermediate folders
 /x64
+/Debug
+/Release
+/.vs/
+
+# --- Temporary Files ---
+# Object files (compiled chunks)
+*.obj
+# Program Database (Debug symbols - these are huge)
+*.pdb
+*.ilk
+*.user
+*.suo
+
+# --- Your Specific Temp File ---
+tmain.help
+
 /SDL2-2.0.10
+
 /lib
