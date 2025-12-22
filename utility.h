@@ -1,5 +1,6 @@
-#define SCREEN_WIDTH	640
-#define SCREEN_HEIGHT	480
+#define SCREEN_WIDTH	1920
+#define SCREEN_HEIGHT	1080
+#define NUMBER_OF_ENTITIES 5
 
 // narysowanie napisu txt na powierzchni screen, zaczynaj�c od punktu (x, y)
 // charset to bitmapa 128x128 zawieraj�ca znaki
@@ -74,4 +75,13 @@ void DrawRectangle(SDL_Surface *screen, int x, int y, int l, int k,
 	DrawLine(screen, x, y + k - 1, l, 1, 0, outlineColor);
 	for(i = y + 1; i < y + k - 1; i++)
 		DrawLine(screen, x + 1, i, l - 2, 1, 0, fillColor);
+	};
+
+void draw_sprite(SDL_Surface *screen, SDL_Surface *sprite, const float x, const float y, const float scale) {
+	SDL_Rect dest;
+	dest.x = x;
+	dest.y = y - sprite->h * scale;
+	dest.w = sprite->w * scale;
+	dest.h = sprite->h * scale;
+	SDL_BlitSurface(sprite, NULL, screen, &dest);
 	};
