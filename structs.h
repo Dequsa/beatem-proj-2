@@ -1,0 +1,67 @@
+#pragma once
+
+enum class EntityType
+{
+    ENTITY_PLAYER = 0,
+    ENTITY_ENEMY, // 1 etc...
+    ENTITY_STATIC_OBJECT,
+    ENTITY_OBJECT,
+};
+
+typedef struct
+{
+    float x;
+    float y;
+    float z; // idk if i will need z coordinate but just in case
+} position_t;
+
+typedef struct
+{
+    float width;
+    float height;
+} dimensions_t;
+
+typedef struct
+{
+    float off_set_x;
+    float off_set_y;
+    dimensions_t size;
+} hitbox_t;
+
+typedef struct
+{
+    int id;
+    int dmg;
+    int current_frames;
+    int animation;
+} attack_t;
+
+typedef struct
+{
+    int id;
+    int sprite_id;
+    EntityType type;
+    position_t position;
+
+    union
+    {
+        struct
+        {
+            bool is_alive;
+            int current_health;
+            hitbox_t hitbox;
+            attack_t current_attack;
+        } enemy;
+
+        struct
+        {
+            bool is_destroyed;
+            dimensions_t size;
+        } object;
+
+        struct
+        {
+            dimensions_t size;
+        } static_object;
+    } data;
+} entity_t;
