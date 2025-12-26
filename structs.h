@@ -38,6 +38,17 @@ typedef struct
 
 typedef struct
 {
+    SDL_Texture* sprite_sheet;
+    int frame_width;
+    int frame_height;
+    int total_frames;
+    int current_frame;
+    float frame_duration; // in msec
+    float timer;
+} animation_t;
+
+typedef struct
+{
     int id;
     int sprite_id;
     EntityType type;

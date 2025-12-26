@@ -46,7 +46,13 @@ bool screen_create_window(screen_t *screen)
     else
     {
         // getting windows surface
-        screen->game_surface = SDL_GetWindowSurface(screen->game_window);
+        screen->game_renderer = SDL_CreateRenderer(screen->game_window, -1, SDL_RENDERER_ACCELERATED);
+
+        if (screen->game_renderer == nullptr)
+        {
+            printf("err while creating renderer: %s\n", SDL_GetError());
+            success = false;
+        }
     }
     return success;
 }
@@ -55,8 +61,6 @@ bool screen_create_window(screen_t *screen)
 // {
 //     // loader flag
 //     bool success = true;
-
-
 
 //     for (int n = 0; n < utility::NUMBER_OF_ENTITIES; ++n)
 //     {
@@ -96,7 +100,7 @@ void screen_create(screen_t *screen)
     {
         if (screen_create_window(screen))
         {
-            //load_all_sprites_to_memory(screen, player_sprite);
+            // load_all_sprites_to_memory(screen, player_sprite);
         }
     }
 }

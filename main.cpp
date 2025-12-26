@@ -5,40 +5,24 @@
 #include "entities.h"
 #include "config_loader.h"
 #include "map_handler.h"
-#include "physics.h"
 #include "screen.h"
 #include "player.h"
 #include "utility.h"
 
-// void button_handler(SDL_Keycode *keycode, bool &quit)
-// {
-// 	switch (*keycode)
-// 	{
-// 	case SDLK_w:
-// 		printf("W key pressed\n");
-// 		break;
-// 	case SDLK_a:
-// 		printf("A key pressed\n");
-// 		break;
-// 	case SDLK_s:
-// 		printf("S key pressed\n");
-// 		break;
-// 	case SDLK_d:
-// 		printf("D key pressed\n");
-// 		break;
-// 	case SDLK_l:
-// 		printf("L key pressed\n");
-// 		break;
-// 	case SDLK_h:
-// 		printf("H key pressed\n");
-// 		break;
-// 	case SDLK_ESCAPE:
-// 		quit = true;
-// 		break;
-// 	default:
-// 		break;
-// 	}
-// }
+void handle_event(SDL_Event *e, bool *quit, Player &player)
+{
+	switch (e->type)
+	{
+	case SDL_QUIT:
+		*quit = true;
+		break;
+	case SDL_KEYDOWN:
+		if (e->key.keysym.sym == SDLK_ESCAPE)
+			*quit = true;
+
+		break;
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -46,30 +30,40 @@ int main(int argc, char *argv[])
 	Player player{};
 
 	screen_create(&screen);
-
+	player.load_sprite(screen.game_renderer);
 	SDL_Event e;
 	bool quit = false;
 
-	while (quit == false)
+	int last_time = SDL_GetPerformanceCounter();
+
+	while (!quit)
 	{
-		while (SDL_PollEvent(&e))
+		int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
+		int current_time = SDL_GetPerformanceCounter();
+		float delta_time = (float)(current_time - last_time) / SDL_GetPerformanceFrequency();
+		last_time = current_time;
+		if (delta_time * 1000 < desired_frame_time)
 		{
-			switch (e.type)
-			{
-			case SDL_QUIT:
-				quit = true;
-				break;
-			case SDL_KEYDOWN:
-				//button_handler(&e.key.keysym.sym, quit);
-				if (player.move(e))
-					quit = true;
-				break;
-			}
+			SDL_Delay((Uint32)(desired_frame_time - delta_time * 1000)); // cap at monitor refresh rate kind of V-SYNC
 		}
 
-		draw_sprite(screen.game_surface, player.get_sprite_surface(), player.get_position().x, player.get_position().y, 1.05f);
+		// debug
+		if (utility::DEBUG_MODE)
+		{
+			printf("Delta time: %f seconds\n", delta_time);
+		}
 
-		SDL_UpdateWindowSurface(screen.game_window);
+		SDL_SetRenderDrawColor(screen.game_renderer, 0, 0, 0, 255);
+		SDL_RenderClear(screen.game_renderer);
+
+		while (SDL_PollEvent(&e))
+		{
+			handle_event(&e, &quit, player);
+		}
+
+		player.move(e, delta_time);
+		draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.3f, player.get_flip_state());
+		SDL_RenderPresent(screen.game_renderer);
 	}
 
 	close(&screen);

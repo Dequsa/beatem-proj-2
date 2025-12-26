@@ -3,7 +3,7 @@
 
 typedef struct {
     SDL_Window* game_window;
-    SDL_Surface* game_surface;
+    SDL_Renderer* game_renderer;
     // SDL_Surface** sprites;
     position_t camera_position;
 }screen_t;

@@ -2,21 +2,20 @@
 #include "utility.h"
 #include "entities.h"
 #include <cstring>
+#include <cstdio>
 
 // Player class constructor
-Player::Player() : sprite_surface_(nullptr),
+Player::Player() : animations{nullptr, 64, 64, 8, 0, 100.0f, 0.0f},
                    type_(EntityType::ENTITY_PLAYER),
-                   position_{50.0f, 30.0f, 0.0f},
+                   position_{utility::SCREEN_HEIGHT / 2.0f, utility::SCREEN_WIDTH / 2.0f, 0.0f},
                    current_health_(100),
                    hitbox_{-16.0f, -16.0f, {32.0f, 32.0f}},
                    current_attack_{0, 10, 0, 0},
-                   current_key_event_(-1)
+                   current_direction_(direction_t::DIRECTION_NONE),
+                   flip_state_(SDL_FLIP_NONE)
 {
     name_ = new char[utility::PLAYER_NAME_MAX_LENGTH]{};
     strcpy(name_, "Brawler");
-
-    // load player sprite
-    sprite_surface_ = SDL_LoadBMP("assets/sprites/sprite_player.bmp");
 }
 
 // Player class destructor
@@ -29,31 +28,64 @@ Player::~Player()
     }
 }
 
-// update player sprite based on position
-void Player::sprite_update()
+// update player sprite based on frame
+void Player::load_sprite(SDL_Renderer *screen)
 {
+    // load player sprite
+    SDL_Surface *temp_surface = SDL_LoadBMP("assets/sprites/player/player_spritesheet.bmp");
+
+    if (temp_surface == nullptr)
+    {
+        printf("err while loading player sprite : %s \n", SDL_GetError());
+    }
+    else
+    {
+        animations.sprite_sheet = SDL_CreateTextureFromSurface(screen, temp_surface);
+    }
+}
+
+void Player::update_sprite_animation(float delta_time)
+{
+    // Update animation timer
+    animations.timer += delta_time * 1000; // convert to milliseconds
+
+    // Check if it's time to advance the frame
+    if (animations.timer >= animations.frame_duration)
+    {
+        animations.current_frame++;
+        animations.timer = 0.0f;
+
+        // loop back to first frame if at the end
+        if (animations.current_frame >= animations.total_frames)
+        {
+            animations.current_frame = 0;
+        }
+    }
 }
 
 // move player sprite based on position
-int Player::move(SDL_Event &e)
+int Player::move(SDL_Event &e, float delta_time)
 {
-    current_key_event_ = e.key.keysym.sym;
-    switch (current_key_event_)
+    const Uint8 *current_key_state = SDL_GetKeyboardState(NULL);
+    const int speed = utility::PLAYER_SPEED_WALKING * delta_time * 1000; // scale speed by delta_time
+
+    if (current_key_state[SDL_SCANCODE_UP])
     {
-    case SDLK_UP:
-        position_.y -= 10.0f;
-        break;
-    case SDLK_DOWN:
-        position_.y += 10.0f;
-        break;
-    case SDLK_LEFT:
-        position_.x -= 10.0f;
-        break;
-    case SDLK_RIGHT:
-        position_.x += 10.0f;
-        break;
-    case SDLK_ESCAPE:
-        return -1;
+        position_.y -= speed;
+    }
+    else if (current_key_state[SDL_SCANCODE_DOWN])
+    {
+        position_.y += speed;
+    }
+    else if (current_key_state[SDL_SCANCODE_LEFT])
+    {
+        position_.x -= speed;
+        flip_state_ = SDL_FLIP_HORIZONTAL;
+    }
+    else if (current_key_state[SDL_SCANCODE_RIGHT])
+    {
+        position_.x += speed;
+        flip_state_ = SDL_FLIP_NONE;
     }
 
     return 0;
