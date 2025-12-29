@@ -57,28 +57,6 @@ bool screen_create_window(screen_t *screen)
     return success;
 }
 
-// bool load_all_sprites_to_memory(screen_t *screen, SDL_Surface* player_sprite)
-// {
-//     // loader flag
-//     bool success = true;
-
-//     for (int n = 0; n < utility::NUMBER_OF_ENTITIES; ++n)
-//     {
-//         // "assets/sprites/sprite_entity_X.bmp"
-//         char destination[SPRITE_LOCATION_STRING_LENGTH];
-//         snprintf(destination, sizeof(destination), "assets/sprites/sprite_entity_%d.bmp", n);
-
-//         screen->sprites[n] = SDL_LoadBMP(destination);
-
-//         if (player_sprite == nullptr)
-//         {
-//             printf("err while loading test sprite number: %d    : %s \n", n, SDL_GetError());
-//             success = false;
-//         }
-//     }
-
-//     return success;
-// }
 
 void close(screen_t *screen)
 {

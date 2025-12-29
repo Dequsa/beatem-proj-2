@@ -6,10 +6,8 @@ namespace utility {
     inline int SCREEN_WIDTH = 1920;
     inline int SCREEN_HEIGHT = 1080;
     inline int MONITOR_REFRESH_RATE = 144;
-    constexpr float PLAYER_SPEED_WALKING = 1.0f;
-    constexpr float PLAYER_SPEED_RUNNING = 3.0f;
     constexpr int NUMBER_OF_ENTITIES = 4;
-    constexpr int PLAYER_NAME_MAX_LENGTH = 128;
+    constexpr char* MAP_PATH = "assets/maps/background.bmp";
 }
 
 void DrawString(SDL_Surface *screen, int x, int y, const char *text,SDL_Surface *charset);

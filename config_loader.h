@@ -1,3 +1,5 @@
+#pragma once
+
 namespace config_loader
 {
     constexpr char* CONFIG_MAP_LOCATION = "/configs/maps.cfg";

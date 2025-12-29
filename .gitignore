@@ -4,7 +4,8 @@ lib/
 x64/
 .libraries/
 
-# Standard Visual Studio ignores (if you haven't added them yet)
+# Build files
+*.exe
 *.obj
 *.pdb
 *.user

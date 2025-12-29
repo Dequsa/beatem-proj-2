@@ -96,7 +96,7 @@ void draw_sprite(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const
 
 	SDL_Rect dest;
 	dest.x = x;
-	dest.y = y - h;
+	dest.y = y;
 	dest.w = w * scale;
 	dest.h = h * scale;
 

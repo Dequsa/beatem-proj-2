@@ -1,11 +1,20 @@
 #pragma once
 
-enum class EntityType
+enum class enitity_type
 {
     ENTITY_PLAYER = 0,
     ENTITY_ENEMY, // 1 etc...
     ENTITY_STATIC_OBJECT,
     ENTITY_OBJECT,
+};
+
+enum class direction_t
+{
+    DIRECTION_NONE = 0,
+    DIRECTION_UP,
+    DIRECTION_DOWN,
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT
 };
 
 typedef struct
@@ -51,7 +60,7 @@ typedef struct
 {
     int id;
     int sprite_id;
-    EntityType type;
+    enitity_type type;
     position_t position;
 
     union
