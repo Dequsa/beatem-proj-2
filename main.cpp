@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	Camera camera(0.0f, -950.0f, 1.3f, PlayerConstants::WALKING_SPEED);
 	Map game_map(screen.game_renderer, utility::MAP_PATH);
 	Player player(screen.game_renderer);
-	
+
 	SDL_Event e;
 	bool quit = false;
 
@@ -46,9 +46,9 @@ int main(int argc, char *argv[])
 		int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
 		int current_time = SDL_GetPerformanceCounter();
 		float delta_time = (float)(current_time - last_time) / SDL_GetPerformanceFrequency();
-		
+
 		last_time = current_time;
-		
+
 		// delay frames if the are faster then expected
 		if (delta_time * 1000 < desired_frame_time)
 		{
@@ -80,8 +80,11 @@ int main(int argc, char *argv[])
 		DrawingFunctions::draw_background(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, camera_constants::BACKGROUND_SIZE_RATIO);
 
 		// draw player sprite
-		DrawingFunctions::draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.2f, player.get_flip_state(), camera.get_position().x, camera.get_position().y);
-		
+		DrawingFunctions::draw_frame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, PlayerConstants::SPRITE_SCALE, player.get_flip_state(), camera.get_position().x,
+									 camera.get_position().y, player.get_animation().frame_height, player.get_animation().frame_width, player.get_animation().current_frame, 5.0f);
+
+		//DrawingFunctions::draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.2f, player.get_flip_state(), camera.get_position().x, camera.get_position().y);
+
 		SDL_RenderPresent(screen.game_renderer);
 	}
 

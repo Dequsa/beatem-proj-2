@@ -5,7 +5,7 @@
 #include <cstdio>
 
 // Player class initialization
-Player::Player(SDL_Renderer *screen) : animations{nullptr, 64, 64, 8, 0, 100.0f, 0.0f},
+Player::Player(SDL_Renderer *screen) : animations_{},
                                        type_(enitity_t::ENTITY_PLAYER),
                                        position_{utility::SCREEN_HEIGHT / 4.0f, utility::SCREEN_WIDTH / 4.0f, 0.0f},
                                        current_health_(100),
@@ -25,21 +25,31 @@ Player::Player(SDL_Renderer *screen) : animations{nullptr, 64, 64, 8, 0, 100.0f,
     }
     else
     {
+        Uint32 colorkey = SDL_MapRGB(temp_surface->format, 255, 255, 255);
+        SDL_SetColorKey(temp_surface, SDL_TRUE, colorkey);
+
         // create texture from surface
-        animations.sprite_sheet = SDL_CreateTextureFromSurface(screen, temp_surface);
+        animations_.sprite_sheet = SDL_CreateTextureFromSurface(screen, temp_surface);
     }
 
     // get sprite size
     int h = 0;
     int w = 0;
-    if (SDL_QueryTexture(animations.sprite_sheet, NULL, NULL, &w, &h))
+    if (SDL_QueryTexture(animations_.sprite_sheet, NULL, NULL, &w, &h))
     {
         printf("Error querying texture: %s\n", SDL_GetError());
         return;
     }
 
-    size_.height = h * 0.2f;
-    size_.width = w * 0.2f;
+    size_.height = PlayerConstants::SPRITE_HEIGHT * PlayerConstants::SPRITE_SCALE;
+    size_.width = PlayerConstants::SPRITE_WIDTH * PlayerConstants::SPRITE_SCALE;
+
+    // animation initialization
+    animations_.frame_height = h;
+    animations_.frame_width = 0.2f * w;
+    animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
+    animations_.total_frames = 5;
+    animations_.current_frame = 0;
 
     // free temp surface
     SDL_FreeSurface(temp_surface);
@@ -55,21 +65,21 @@ Player::~Player()
     }
 }
 
+// Update current player sprite
 void Player::update_sprite_animation(float delta_time)
 {
-    // Update animation timer
-    animations.timer += delta_time * 1000; // convert to milliseconds
+    animations_.timer += delta_time * 1000;
 
     // Check if it's time to advance the frame
-    if (animations.timer >= animations.frame_duration)
+    if (animations_.timer >= animations_.frame_duration)
     {
-        animations.current_frame++;
-        animations.timer = 0.0f;
+        animations_.current_frame++;
+        animations_.timer = 0.0f;
 
         // loop back to first frame if at the end
-        if (animations.current_frame >= animations.total_frames)
+        if (animations_.current_frame >= animations_.total_frames)
         {
-            animations.current_frame = 0;
+            animations_.current_frame = 0;
         }
     }
 }
@@ -146,4 +156,14 @@ void Player::move(SDL_Event &e, float delta_time, bool camera_state, int map_wid
 
     PhysicsFunctions::move_object_y(speed_, &position_.x, &position_.y, current_direction_);
     PhysicsFunctions::move_object_x(speed_, &position_.x, &position_.y, current_direction_);
+
+    if (current_direction_ != direction_t::DIRECTION_NONE)
+    {
+        update_sprite_animation(delta_time);
+    }
+    else
+    {
+        // animations_.current_frame = 0;
+        // animations_.timer = 0;
+    }
 }

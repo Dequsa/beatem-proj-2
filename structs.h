@@ -50,7 +50,7 @@ typedef struct
 {
     SDL_Texture* sprite_sheet;
     int frame_width;
-    int frame_height;
+    int frame_height; // its the same for all i guess..
     int total_frames;
     int current_frame;
     float frame_duration; // in msec

@@ -1,4 +1,5 @@
 #include "utility.h"
+#include "structs.h"
 #include <cstdio>
 #include <SDL.h>
 // narysowanie napisu txt na powierzchni screen, zaczynajc od punktu (x, y)
@@ -130,8 +131,23 @@ namespace DrawingFunctions
 		SDL_RenderCopyEx(screen, background, &camera_rect, NULL, 0, NULL, SDL_FLIP_NONE);
 	};
 
-	void update_animation()
+	void draw_frame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offset)
 	{
+		SDL_Rect dest;
+		dest.x = (int)(x - camera_x);
+		dest.y = (int)(y - camera_y);
+		dest.w = w * scale;
+		dest.h = h * scale;
 
+		SDL_Rect src;
+
+		src.x = current_frame * (int)w + offset;
+		src.y = 0;
+		src.w = (int)w;
+		src.h = (int)h;
+
+		printf("Frame: %d | SrcRect X: %d | Width: %d\n", current_frame, src.x, src.w);
+
+		SDL_RenderCopyEx(screen, sprite, &src, &dest, 0, NULL, flip);
 	};
 }

@@ -8,9 +8,10 @@ namespace PlayerConstants
     constexpr float WALKING_SPEED = 1.0f;
     constexpr float RUNNING_SPEED = 3.0f;
     constexpr int NAME_MAX_LENGTH = 128;
-    constexpr char* SPRITE_PATH = "assets/sprites/player/sprite_player_1.bmp";
-    constexpr int SPRITE_WIDTH = 659;
-    constexpr int SPRITE_HEIGHT = 1324;
+    constexpr char* SPRITE_PATH = "assets/sprites/player/player_spritesheet.bmp";
+    constexpr int SPRITE_WIDTH = 195;
+    constexpr int SPRITE_HEIGHT = 396;
+    constexpr float SPRITE_SCALE = 0.67f;
 }
 
 class Player
@@ -25,7 +26,7 @@ private:
     attack_t current_attack_;
     direction_t current_direction_; // 0 not moving | 1 up | 2 down | 3 left | 4 right
     SDL_RendererFlip flip_state_;
-    animation_t animations;
+    animation_t animations_;
     float speed_;
     dimensions_t size_;
 
@@ -58,11 +59,12 @@ public:
     void attack(SDL_Event &e);
 
     // getters
-    SDL_Texture* get_sprite_sheet() { return animations.sprite_sheet; }
+    SDL_Texture* get_sprite_sheet() { return animations_.sprite_sheet; }
     position_t get_position() { return position_; }
     direction_t get_direction() { return current_direction_; }
     SDL_RendererFlip get_flip_state() { return flip_state_; }
     float get_scale() { return (position_.z / utility::SCREEN_HEIGHT); }
     float get_speed() { return speed_; }
     dimensions_t get_size() { return size_; }
+    animation_t get_animation() { return animations_; }
 };

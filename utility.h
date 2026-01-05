@@ -26,4 +26,6 @@ namespace DrawingFunctions
     void draw_sprite(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y);
 
     void draw_background(SDL_Renderer *screen, SDL_Texture *background, float x, float y, float scale);
+
+    void draw_frame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offeset);
 }
