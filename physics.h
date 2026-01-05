@@ -1,16 +1,15 @@
 #pragma once
+#include "structs.h"
 
-// class Movement
-// {
-// private:
-//     float velocit_; // overall velocity pythorean theorem sqrt(vx^2 + vy^2)
-//     float velocity_x_;
-//     float velocity_y_;
-//     float speed_multiplier_; // multiplier for speed (e.g., running vs walking)
-// public:
-//     void calculate_velocity(direction_t direction);
-//     void set_speed_multiplier(float multiplier) { speed_multiplier_ = multiplier; }
+namespace PhysicsFunctions
+{
+    void check_bounds(float max_x, float max_y, float min_x, float min_y);
 
-//     // getters
-//     float get_velocity() {return velocit_; }
-// };
+    void move_object_x(float velocity, float *x, float *y, direction_t current_direction);
+
+    void move_object_y(float velocity, float *x, float *y, direction_t current_direction);
+
+    void move_object(float speed, float *x, float *y, direction_t current_direction);
+
+    float calculate_velocity(float dt, float base_vel);
+}

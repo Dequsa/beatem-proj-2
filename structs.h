@@ -1,6 +1,7 @@
 #pragma once
+#include "utility.h"
 
-enum class enitity_type
+enum class enitity_t
 {
     ENTITY_PLAYER = 0,
     ENTITY_ENEMY, // 1 etc...
@@ -60,7 +61,7 @@ typedef struct
 {
     int id;
     int sprite_id;
-    enitity_type type;
+    enitity_t type;
     position_t position;
 
     union

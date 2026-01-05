@@ -3,10 +3,10 @@
 #include "structs.h"
 #include "physics.h"
 
-namespace player_constants
+namespace PlayerConstants
 {
-    constexpr float SPEED_WALKING = 1.0f;
-    constexpr float SPEED_RUNNING = 3.0f;
+    constexpr float WALKING_SPEED = 1.0f;
+    constexpr float RUNNING_SPEED = 3.0f;
     constexpr int NAME_MAX_LENGTH = 128;
     constexpr char* SPRITE_PATH = "assets/sprites/player/sprite_player_1.bmp";
     constexpr int SPRITE_WIDTH = 659;
@@ -16,8 +16,7 @@ namespace player_constants
 class Player
 {
 private:
-    const enitity_type type_; // set to player type
-    // SDL_Texture* sprite_texture_;
+    const enitity_t type_; // set to player type
     char *name_;
     position_t position_;
     int current_health_;
@@ -28,6 +27,19 @@ private:
     SDL_RendererFlip flip_state_;
     animation_t animations;
     float speed_;
+    dimensions_t size_;
+
+    // handle player controls / key-state
+    void handle_controls();
+
+    // flips player
+    void update_flip_state();
+
+    // clamp by right left
+    void bound_sides(int map_width);
+    
+    // clamp by top bottom
+    void bound_top(int map_heigth);
 
 public:
     // player class constructor
@@ -40,7 +52,7 @@ public:
     void update_sprite_animation(float delta_time);
 
     // move player sprite based on position
-    int move(SDL_Event &e, float delta_time);
+    void move(SDL_Event &e, float delta_time, bool camera_state, int map_width, int map_heigth);
 
     // perform attack
     void attack(SDL_Event &e);
@@ -52,4 +64,5 @@ public:
     SDL_RendererFlip get_flip_state() { return flip_state_; }
     float get_scale() { return (position_.z / utility::SCREEN_HEIGHT); }
     float get_speed() { return speed_; }
+    dimensions_t get_size() { return size_; }
 };

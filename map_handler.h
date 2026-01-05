@@ -17,7 +17,7 @@ class Map
 
         // getters
         SDL_Texture* get_map_texture() { return texture_; }
-        int get_map_width() { return width_; }
-        int get_map_height() { return height_; }
+        int get_width() { return width_; }
+        int get_height() { return height_; }
 
 };

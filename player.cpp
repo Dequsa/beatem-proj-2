@@ -6,18 +6,18 @@
 
 // Player class initialization
 Player::Player(SDL_Renderer *screen) : animations{nullptr, 64, 64, 8, 0, 100.0f, 0.0f},
-                                       type_(enitity_type::ENTITY_PLAYER),
-                                       position_{utility::SCREEN_HEIGHT / 2.0f, utility::SCREEN_WIDTH / 2.0f, 0.0f},
+                                       type_(enitity_t::ENTITY_PLAYER),
+                                       position_{utility::SCREEN_HEIGHT / 4.0f, utility::SCREEN_WIDTH / 4.0f, 0.0f},
                                        current_health_(100),
                                        hitbox_{-16.0f, -16.0f, {32.0f, 32.0f}},
                                        current_attack_{0, 10, 0, 0},
                                        current_direction_(direction_t::DIRECTION_NONE),
                                        flip_state_(SDL_FLIP_NONE)
 {
-    name_ = new char[player_constants::NAME_MAX_LENGTH]{};
+    name_ = new char[PlayerConstants::NAME_MAX_LENGTH]{};
     strcpy(name_, "Brawler");
 
-    SDL_Surface *temp_surface = SDL_LoadBMP(player_constants::SPRITE_PATH);
+    SDL_Surface *temp_surface = SDL_LoadBMP(PlayerConstants::SPRITE_PATH);
 
     if (temp_surface == nullptr)
     {
@@ -28,6 +28,18 @@ Player::Player(SDL_Renderer *screen) : animations{nullptr, 64, 64, 8, 0, 100.0f,
         // create texture from surface
         animations.sprite_sheet = SDL_CreateTextureFromSurface(screen, temp_surface);
     }
+
+    // get sprite size
+    int h = 0;
+    int w = 0;
+    if (SDL_QueryTexture(animations.sprite_sheet, NULL, NULL, &w, &h))
+    {
+        printf("Error querying texture: %s\n", SDL_GetError());
+        return;
+    }
+
+    size_.height = h * 0.2f;
+    size_.width = w * 0.2f;
 
     // free temp surface
     SDL_FreeSurface(temp_surface);
@@ -62,46 +74,76 @@ void Player::update_sprite_animation(float delta_time)
     }
 }
 
-
-// NEED TO CHANGE TH BOUNDING MECHANISIM
-// move player sprite based on speed delta time and direction
-int Player::move(SDL_Event &e, float delta_time)
+void Player::handle_controls()
 {
     const Uint8 *current_key_state = SDL_GetKeyboardState(NULL);
-    speed_ = player_constants::SPEED_WALKING * delta_time * 1000.0f; // scale speed by delta_time
 
     if (current_key_state[SDL_SCANCODE_UP]) // move up
     {
-        if (position_.y - speed_ < 471 * 0.68f) // prevent moving off screen 471 * background_size_ratio
-            position_.y = 471 * 0.68f;
-        else
-            position_.y -= speed_;
+        current_direction_ = direction_t::DIRECTION_UP;
     }
     else if (current_key_state[SDL_SCANCODE_DOWN]) // move down
     {
-        if (position_.y + player_constants::SPRITE_HEIGHT * scale_ + speed_ > utility::SCREEN_HEIGHT) // prevent moving off screen
-            position_.y = utility::SCREEN_HEIGHT - player_constants::SPRITE_HEIGHT * scale_;
-        else
-            position_.y += speed_;
+        current_direction_ = direction_t::DIRECTION_DOWN;
     }
     else if (current_key_state[SDL_SCANCODE_LEFT]) // move left
     {
-        if (position_.x - speed_ < 0) // prevent moving off screen
-            position_.x = 0;
-        else
-            position_.x -= speed_;
-
-        flip_state_ = SDL_FLIP_HORIZONTAL;
+        current_direction_ = direction_t::DIRECTION_LEFT;
     }
     else if (current_key_state[SDL_SCANCODE_RIGHT]) // move right
     {
-        if (position_.x + player_constants::SPRITE_WIDTH * scale_ + speed_ > utility::SCREEN_WIDTH) // prevent moving off screen
-            position_.x = utility::SCREEN_WIDTH - player_constants::SPRITE_WIDTH * scale_;
-        else
-            position_.x += speed_;
-
-        flip_state_ = SDL_FLIP_NONE;
+        current_direction_ = direction_t::DIRECTION_RIGHT;
     }
+    else
+    {
+        current_direction_ = direction_t::DIRECTION_NONE;
+    }
+}
 
-    return 0;
+void Player::update_flip_state()
+{
+    switch (current_direction_)
+    {
+    case direction_t::DIRECTION_LEFT:
+        flip_state_ = SDL_FLIP_HORIZONTAL;
+        break;
+    case direction_t::DIRECTION_RIGHT:
+        flip_state_ = SDL_FLIP_NONE;
+        break;
+    }
+}
+
+void Player::bound_sides(int map_width)
+{
+    if (position_.x + size_.width > map_width)
+        position_.x = map_width - size_.width;
+
+    if (position_.x < 0.0f)
+        position_.x = 0.0f;
+}
+
+void Player::bound_top(int map_heigth)
+{
+
+    if (position_.y < 1063.0f - size_.height)
+        position_.y = 1063.0f - size_.height;
+
+    if (position_.y > map_heigth - size_.height)
+        position_.y = map_heigth - size_.height;
+}
+
+// move player sprite on the plane based on speed delta time and direction
+void Player::move(SDL_Event &e, float delta_time, bool camera_state, int map_width, int map_heigth)
+{
+    handle_controls();
+
+    speed_ = PhysicsFunctions::calculate_velocity(delta_time, PlayerConstants::WALKING_SPEED);
+
+    update_flip_state();
+
+    bound_sides(map_width);
+    bound_top(map_heigth);
+
+    PhysicsFunctions::move_object_y(speed_, &position_.x, &position_.y, current_direction_);
+    PhysicsFunctions::move_object_x(speed_, &position_.x, &position_.y, current_direction_);
 }
