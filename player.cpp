@@ -6,31 +6,17 @@
 
 // Player class initialization
 Player::Player(SDL_Renderer *screen) : animations_{},
-                                       type_(enitity_t::ENTITY_PLAYER),
+                                       type_(type_t::ENTITY_PLAYER),
                                        position_{utility::SCREEN_HEIGHT / 4.0f, utility::SCREEN_WIDTH / 4.0f, 0.0f},
                                        current_health_(100),
-                                       hitbox_{-16.0f, -16.0f, {32.0f, 32.0f}},
                                        current_attack_{0, 10, 0, 0},
                                        current_direction_(direction_t::DIRECTION_NONE),
                                        flip_state_(SDL_FLIP_NONE)
 {
     name_ = new char[PlayerConstants::NAME_MAX_LENGTH]{};
-    strcpy(name_, "Brawler");
+    strcpy(name_, PlayerConstants::DEFAULT_NAME);
 
-    SDL_Surface *temp_surface = SDL_LoadBMP(PlayerConstants::SPRITE_PATH);
-
-    if (temp_surface == nullptr)
-    {
-        printf("err while loading player sprite : %s \n", SDL_GetError());
-    }
-    else
-    {
-        Uint32 colorkey = SDL_MapRGB(temp_surface->format, 255, 255, 255);
-        SDL_SetColorKey(temp_surface, SDL_TRUE, colorkey);
-
-        // create texture from surface
-        animations_.sprite_sheet = SDL_CreateTextureFromSurface(screen, temp_surface);
-    }
+    animations_.sprite_sheet = InGameLoaders::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
 
     // get sprite size
     int h = 0;
@@ -50,9 +36,6 @@ Player::Player(SDL_Renderer *screen) : animations_{},
     animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
     animations_.total_frames = 5;
     animations_.current_frame = 0;
-
-    // free temp surface
-    SDL_FreeSurface(temp_surface);
 }
 
 // Player class destructor

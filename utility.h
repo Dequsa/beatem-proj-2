@@ -29,3 +29,8 @@ namespace DrawingFunctions
 
     void draw_frame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offeset);
 }
+
+namespace InGameLoaders
+{
+    SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path);
+}

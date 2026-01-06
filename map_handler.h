@@ -1,5 +1,6 @@
 #pragma once
 #include "utility.h"
+#include "structs.h"
 
 class Map
 {

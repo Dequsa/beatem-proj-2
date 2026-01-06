@@ -5,6 +5,7 @@
 
 namespace PlayerConstants
 {
+    constexpr char* DEFAULT_NAME = "Brawler";
     constexpr float WALKING_SPEED = 1.0f;
     constexpr float RUNNING_SPEED = 3.0f;
     constexpr int NAME_MAX_LENGTH = 128;
@@ -17,12 +18,11 @@ namespace PlayerConstants
 class Player
 {
 private:
-    const enitity_t type_; // set to player type
+    type_t type_; // set to player type
     char *name_;
     position_t position_;
     int current_health_;
     float scale_ = 0.3f;
-    hitbox_t hitbox_;
     attack_t current_attack_;
     direction_t current_direction_; // 0 not moving | 1 up | 2 down | 3 left | 4 right
     SDL_RendererFlip flip_state_;

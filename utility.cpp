@@ -151,3 +151,27 @@ namespace DrawingFunctions
 		SDL_RenderCopyEx(screen, sprite, &src, &dest, 0, NULL, flip);
 	};
 }
+
+namespace InGameLoaders
+{
+	SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path)
+	{
+		SDL_Surface *temp_surface = SDL_LoadBMP(path);
+		SDL_Texture *new_texture = nullptr;
+
+		if (temp_surface == nullptr)
+		{
+			printf("err while loading player sprite : %s \n", SDL_GetError());
+		}
+		else
+		{
+			Uint32 colorkey = SDL_MapRGB(temp_surface->format, 255, 255, 255);
+			SDL_SetColorKey(temp_surface, SDL_TRUE, colorkey);
+
+			// create texture from surface
+			new_texture = SDL_CreateTextureFromSurface(screen, temp_surface);
+		}
+		SDL_FreeSurface(temp_surface);
+		return new_texture;
+	}
+}
