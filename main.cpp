@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
 	Camera camera(0.0f, -950.0f, 1.3f, PlayerConstants::WALKING_SPEED);
 	Map game_map(screen.game_renderer, utility::MAP_PATH);
 	Player player(screen.game_renderer);
+	Enemy enemy(1, 800.0f, 900.0f, screen.game_renderer);
 
 	SDL_Event e;
 	bool quit = false;
@@ -76,12 +77,19 @@ int main(int argc, char *argv[])
 		// camera movement
 		camera.update(player.get_position(), game_map.get_width(), game_map.get_height());
 
+		// entity movement
+		enemy.update(player.get_position(), player.get_size(), delta_time);
+		
 		// draw background
 		DrawingFunctions::draw_background(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, camera_constants::BACKGROUND_SIZE_RATIO);
 
 		// draw player sprite
 		DrawingFunctions::draw_frame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, PlayerConstants::SPRITE_SCALE, player.get_flip_state(), camera.get_position().x,
 									 camera.get_position().y, player.get_animation().frame_height, player.get_animation().frame_width, player.get_animation().current_frame, 5.0f);
+
+		// draw enemy sprite
+		DrawingFunctions::draw_frame(screen.game_renderer, enemy.get_sprite_sheet(), enemy.get_position().x, enemy.get_position().y, PlayerConstants::SPRITE_SCALE, player.get_flip_state(), camera.get_position().x,
+									 camera.get_position().y, enemy.get_animation().frame_height, enemy.get_animation().frame_width, enemy.get_animation().current_frame, 5.0f);
 
 		//DrawingFunctions::draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.2f, player.get_flip_state(), camera.get_position().x, camera.get_position().y);
 

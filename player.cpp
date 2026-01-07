@@ -16,7 +16,7 @@ Player::Player(SDL_Renderer *screen) : animations_{},
     name_ = new char[PlayerConstants::NAME_MAX_LENGTH]{};
     strcpy(name_, PlayerConstants::DEFAULT_NAME);
 
-    animations_.sprite_sheet = InGameLoaders::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
+    animations_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
 
     // get sprite size
     int h = 0;
@@ -130,15 +130,15 @@ void Player::move(SDL_Event &e, float delta_time, bool camera_state, int map_wid
 {
     handle_controls();
 
-    speed_ = PhysicsFunctions::calculate_velocity(delta_time, PlayerConstants::WALKING_SPEED);
+    speed_ = MovementFunctions::calculate_velocity(delta_time, PlayerConstants::WALKING_SPEED);
 
     update_flip_state();
 
     bound_sides(map_width);
     bound_top(map_heigth);
 
-    PhysicsFunctions::move_object_y(speed_, &position_.x, &position_.y, current_direction_);
-    PhysicsFunctions::move_object_x(speed_, &position_.x, &position_.y, current_direction_);
+    MovementFunctions::move_object_y(speed_, &position_.x, &position_.y, current_direction_);
+    MovementFunctions::move_object_x(speed_, &position_.x, &position_.y, current_direction_);
 
     if (current_direction_ != direction_t::DIRECTION_NONE)
     {

@@ -49,7 +49,10 @@ public:
     Enemy(int id, float x, float y, SDL_Renderer *screen);
     ~Enemy();
 
-    void update();
+    void update(position_t player_pos, dimensions_t player_size, float dt);
+
+    animation_t get_animation() { return anim_; };
+    SDL_Texture* get_sprite_sheet() { return anim_.sprite_sheet; };
 };
 
 class StaticObject : public Entity

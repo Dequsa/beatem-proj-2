@@ -146,13 +146,14 @@ namespace DrawingFunctions
 		src.w = (int)w;
 		src.h = (int)h;
 
-		printf("Frame: %d | SrcRect X: %d | Width: %d\n", current_frame, src.x, src.w);
+		if (utility::DEBUG_MODE)
+			printf("Frame: %d | SrcRect X: %d | Width: %d\n", current_frame, src.x, src.w);
 
 		SDL_RenderCopyEx(screen, sprite, &src, &dest, 0, NULL, flip);
 	};
 }
 
-namespace InGameLoaders
+namespace InGameManagers
 {
 	SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path)
 	{
