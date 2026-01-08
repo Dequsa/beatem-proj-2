@@ -136,13 +136,16 @@ namespace DrawingFunctions
 		SDL_Rect dest;
 		dest.x = (int)(x - camera_x);
 		dest.y = (int)(y - camera_y);
-		dest.w = w * scale;
+		dest.w = w * scale; // hight of the sprite sheet scaled
 		dest.h = h * scale;
 
 		SDL_Rect src;
 
+		// what part of the sprite sheet to render
 		src.x = current_frame * (int)w + offset;
 		src.y = 0;
+
+		// how big the cutout should the rectangle be
 		src.w = (int)w;
 		src.h = (int)h;
 

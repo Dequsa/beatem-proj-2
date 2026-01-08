@@ -2,7 +2,7 @@
 #include "utility.h"
 #include "structs.h"
 
-namespace camera_constants 
+namespace CameraConstants 
 {
     inline float BACKGROUND_SIZE_RATIO = (utility::SCREEN_WIDTH / 2816.0f); // background size ratio compared to screen size |   SCREEN_WIDTH / BACKGROUND_WIDTH
 }

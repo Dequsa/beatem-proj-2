@@ -8,7 +8,7 @@ namespace utility
     inline int SCREEN_HEIGHT = 1080;
     inline int MONITOR_REFRESH_RATE = 144;
     constexpr int NUMBER_OF_ENTITIES = 4;
-    constexpr char *MAP_PATH = "assets/maps/background.bmp";
+    constexpr const char *MAP_PATH = "assets/maps/background.bmp";
 }
 
 namespace DrawingFunctions

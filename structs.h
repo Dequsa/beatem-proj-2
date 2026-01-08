@@ -27,8 +27,8 @@ typedef struct
 
 typedef struct
 {
-    float width;
-    float height;
+    int width;
+    int height;
 } dimensions_t;
 
 typedef struct
@@ -40,17 +40,16 @@ typedef struct
 
 typedef struct
 {
-    int id;
+    const char *name;
     int dmg;
-    int current_frames;
-    int animation;
+    float cooldown;
 } attack_t;
 
 typedef struct
 {
-    SDL_Texture* sprite_sheet;
-    int frame_width;
-    int frame_height; // its the same for all i guess..
+    SDL_Texture *sprite_sheet;
+    int sheet_width;  // it should be frame instead of sheet
+    int sheet_height; // it should be frame instead of sheet
     int total_frames;
     int current_frame;
     float frame_duration; // in msec
@@ -86,3 +85,10 @@ typedef struct
         } static_object;
     } data;
 } entity_t;
+
+namespace Attacks
+{
+    // name | damage (hitpoints) | cooldown (msec)
+    constexpr attack_t LIGHT{"Light Attack", 5, 1500};
+    constexpr attack_t HEAVY{"Heavy Attack", 15, 8000};
+}   

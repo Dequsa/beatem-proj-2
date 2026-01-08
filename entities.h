@@ -4,14 +4,16 @@
 
 namespace StaticObjectConstants
 {
-    
+
 }
 
 namespace EnemyConstants
 {
     constexpr int MAX_HEALTH = 100;
     constexpr int TOTAL_FRAMES_ANIM = 5;
-    constexpr char *SPRITE_PATH = "assets/sprites/player/player_spritesheet.bmp";
+    constexpr const char *SPRITE_PATH = "assets/sprites/player/player_spritesheet.bmp";
+    constexpr int SPRITE_WIDTH = 195;
+    constexpr int SPRITE_HEIGHT = 396;
 }
 
 class Entity
@@ -24,7 +26,7 @@ protected:
 
 public:
     Entity(int id, float x, float y, type_t type);
-    virtual ~Entity(){};
+    virtual ~Entity() {};
 
     // getters
     int get_id() { return id_; }
@@ -33,26 +35,30 @@ public:
     type_t get_type() { return type_; }
 };
 
+class Player;
+
 class Enemy : public Entity
 {
 private:
     int health_;
     bool is_alive_;
+    bool is_attacking_;
+    int attack_cd_;
     attack_t current_attack_;
     animation_t anim_;
 
     void update_animation_sprite();
     void move();
-    void damage_player();
+    void attack_player(Player &p, const float dt);
 
 public:
     Enemy(int id, float x, float y, SDL_Renderer *screen);
     ~Enemy();
 
-    void update(position_t player_pos, dimensions_t player_size, float dt);
+    void update(Player &p, const float dt);
 
     animation_t get_animation() { return anim_; };
-    SDL_Texture* get_sprite_sheet() { return anim_.sprite_sheet; };
+    SDL_Texture *get_sprite_sheet() { return anim_.sprite_sheet; };
 };
 
 class StaticObject : public Entity

@@ -1,7 +1,6 @@
 #include "camera.h"
 #include "cstdio"
 
-
 Camera::Camera(float x, float y, float zoom, float speed) : position_{x, y, 0.0f}, zoom_(zoom), speed_{speed}
 {
     size_.height = utility::SCREEN_HEIGHT / 2;
