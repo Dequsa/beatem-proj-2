@@ -4,8 +4,8 @@
 namespace utility
 {
     inline bool DEBUG_MODE = false;
-    inline int SCREEN_WIDTH = 1920;
-    inline int SCREEN_HEIGHT = 1080;
+    inline int SCREEN_WIDTH = 800;
+    inline int SCREEN_HEIGHT = 800;
     inline int MONITOR_REFRESH_RATE = 144;
     constexpr int NUMBER_OF_ENTITIES = 4;
     constexpr const char *MAP_PATH = "assets/maps/background.bmp";

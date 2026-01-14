@@ -17,8 +17,8 @@ namespace MovementFunctions
             x = 0.0f;
 
         // bound y
-        if (y < 1063.0f - h) // floor top
-            y = 1063.0f - h;
+        if (y < 1163.0f - h) // floor top
+            y = 1163.0f - h;
 
         if (y > map_h - h) // bottom of the screen
             y = map_h - h;
@@ -48,9 +48,9 @@ namespace MovementFunctions
 
     void move_object_y(float velocity, float &x, float &y, float &scale, direction_t current_direction)
     {
-        float min_size = 0.61f;
+        float min_size = 0.51f;
         float max_size = 0.67f;
-        float distance = 200.0f * (1920.0f/2816.0f);
+        float distance = 200.0f * CameraConstants::BACKGROUND_SIZE_RATIO;
         float scale_step = (max_size - min_size) / distance;
 
         switch (current_direction)
