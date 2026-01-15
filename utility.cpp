@@ -99,8 +99,8 @@ namespace DrawingFunctions
 		}
 
 		SDL_Rect dest;
-		dest.x = (int)(x - camera_x);
-		dest.y = (int)(y - camera_y);
+		dest.x = static_cast<int>(x - camera_x);
+		dest.y = static_cast<int>(y - camera_y);
 		dest.w = w * scale;
 		dest.h = h * scale;
 
@@ -118,13 +118,13 @@ namespace DrawingFunctions
 
 		if (background == nullptr)
 		{
-			printf("Error: sprite texture is null!\n");
+			printf("Error: background texture is null!\n");
 			return;
 		}
 
 		SDL_Rect camera_rect;
-		camera_rect.x = (int)x;
-		camera_rect.y = (int)y;
+		camera_rect.x = static_cast<int>(x);
+		camera_rect.y = static_cast<int>(y);
 		camera_rect.w = utility::SCREEN_WIDTH;
 		camera_rect.h = utility::SCREEN_HEIGHT;
 
@@ -134,8 +134,8 @@ namespace DrawingFunctions
 	void DrawFrame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offset)
 	{
 		SDL_Rect dest;
-		dest.x = (int)(x - camera_x);
-		dest.y = (int)(y - camera_y);
+		dest.x = static_cast<int>(x - camera_x);
+		dest.y = static_cast<int>(y - camera_y);
 		dest.w = w * scale; // hight of the sprite sheet scaled
 		dest.h = h * scale;
 

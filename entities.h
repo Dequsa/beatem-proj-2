@@ -26,7 +26,7 @@ protected:
 
 public:
     Entity(int id, float x, float y, type_t type);
-    virtual ~Entity() {};
+    // no destructor bcs it's just a template for all entities never planing on using it to destruct using this
 
     // getters
     int get_id() { return id_; }
@@ -46,6 +46,7 @@ private:
     float attack_cd_;
     attack_t current_attack_;
     animation_t anim_;
+    SDL_RendererFlip flip_;
 
     // sprite handling
     void update_animation_sprite();
@@ -63,13 +64,17 @@ public:
 
     void update(Player &p, const float dt);
 
+    // getters
     animation_t get_animation() { return anim_; };
     SDL_Texture *get_sprite_sheet() { return anim_.sprite_sheet; };
+    SDL_RendererFlip GetFlipState() { return flip_; };
 };
 
 class StaticObject : public Entity
 {
 private:
+    position_t pos_;
+    dimensions_t size_;
 public:
     StaticObject();
     ~StaticObject();

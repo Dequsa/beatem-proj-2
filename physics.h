@@ -7,9 +7,9 @@ namespace MovementFunctions
 
     void bound_entity(float &x, float &y, int w, int h, int map_w, int map_h);
 
-    void move_object_x(float velocity, float &x, float &y, direction_t current_direction);
+    void move_object_x(float velocity, float &x, direction_t current_direction);
 
-    void move_object_y(float velocity, float &x, float &y, float &scale, direction_t current_direction);
+    void move_object_y(float velocity, float &y, float &scale, direction_t current_direction);
 
     void move_object(float velocity, float &x, float &y, float &scale, direction_t current_direction, int w, int h, int map_w, int map_h);
 

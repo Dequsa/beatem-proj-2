@@ -27,11 +27,11 @@ namespace MovementFunctions
     // calculating velocity
     float calculate_velocity(float dt, float base_vel)
     {
-        return (float)(base_vel * dt * 1000.0f); // scale speed by delta_time
+        return base_vel * dt * 1000.0f; // scale speed by delta_time
     }
 
     // moving system
-    void move_object_x(float velocity, float &x, float &y, direction_t current_direction)
+    void move_object_x(float velocity, float &x, direction_t current_direction)
     {
         switch (current_direction)
         {
@@ -46,7 +46,7 @@ namespace MovementFunctions
         }
     }
 
-    void move_object_y(float velocity, float &x, float &y, float &scale, direction_t current_direction)
+    void move_object_y(float velocity, float &y, float &scale, direction_t current_direction)
     {
         float min_size = 0.51f;
         float max_size = 0.67f;
@@ -87,8 +87,8 @@ namespace MovementFunctions
             return;
         }
 
-        move_object_x(velocity, x, y, current_direction);
-        move_object_y(velocity, x, y, scale, current_direction);
+        move_object_x(velocity, x, current_direction);
+        move_object_y(velocity, y, scale, current_direction);
         bound_entity(x, y, w, h, map_w, map_h);
     }
 }

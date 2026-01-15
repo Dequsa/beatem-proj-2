@@ -3,6 +3,7 @@
 
 Camera::Camera(float x, float y, float zoom, float speed) : position_{x, y, 0.0f}, zoom_(zoom), speed_{speed}
 {
+    // put camera in the middle so the player is in the middle of the screen
     size_.height = utility::SCREEN_HEIGHT / 2;
     size_.width = utility::SCREEN_WIDTH / 2;
 }

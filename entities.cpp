@@ -13,11 +13,12 @@ Entity::Entity(int id, float x, float y, type_t type) : type_(type), id_(id)
 }
 
 // enemy class initialzation
-Enemy::Enemy(int id, float x, float y, SDL_Renderer *screen) : health_(EnemyConstants::MAX_HEALTH),
-                                                               Entity(id, x, y, type_t::ENTITY_ENEMY),
+Enemy::Enemy(int id, float x, float y, SDL_Renderer *screen) : Entity(id, x, y, type_t::ENTITY_ENEMY),
+                                                               health_(EnemyConstants::MAX_HEALTH),
                                                                is_attacking_(false),
                                                                is_alive_(false),
-                                                               attack_cd_(10)
+                                                               attack_cd_(1.0f),
+                                                               flip_(SDL_FLIP_NONE)
 {
 
     anim_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, EnemyConstants::SPRITE_PATH);
@@ -53,6 +54,16 @@ void Enemy::update_animation_sprite()
 
 void Enemy::move()
 {
+    if (position_.x <= utility::SCREEN_WIDTH)
+    {
+        flip_ = SDL_FLIP_NONE;
+        position_.x += 0.1f;
+    }
+    else
+    {
+        flip_ = SDL_FLIP_HORIZONTAL;
+        position_.x -= 0.1f;
+    }
 }
 
 void Enemy::choose_attack()
@@ -92,6 +103,7 @@ void Enemy::update(Player &p, const float dt)
 {
     // move();
     attack_player(p, dt);
+    move();
 
     if (utility::DEBUG_MODE)
     {

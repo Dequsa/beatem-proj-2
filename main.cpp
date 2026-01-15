@@ -43,19 +43,23 @@ int main(int argc, char *argv[])
 	SDL_Event e;
 	bool quit = false;
 
-	int last_time = SDL_GetPerformanceCounter();
+	Uint64 last_time = SDL_GetPerformanceCounter();
+	int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
+	const Uint64 PC_FREQ = SDL_GetPerformanceFrequency();
 	while (!quit)
 	{
-		int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
-		int current_time = SDL_GetPerformanceCounter();
-		float delta_time = (float)(current_time - last_time) / SDL_GetPerformanceFrequency();
+		
+		Uint64 current_time = SDL_GetPerformanceCounter();
+		float delta_time = static_cast<float>(current_time - last_time) / PC_FREQ; // precise seconds | how many times CPU has ticks/s
 
 		last_time = current_time;
 
+		// dont let delta time be larger then 10fps
+		if (delta_time > 0.1f)	delta_time = 0.1f;
 		// delay frames if the are faster then expected
-		if (delta_time * 1000 < desired_frame_time)
+		if (delta_time * 1000.0f < desired_frame_time)
 		{
-			SDL_Delay((Uint32)(desired_frame_time - delta_time * 1000)); // cap at monitor refresh rate (set in config) kind of V-SYNC
+			SDL_Delay(static_cast<Uint64>(desired_frame_time - delta_time * 1000.0f)); // cap at monitor refresh rate (set in config) kind of V-SYNC
 		}
 
 		// debug
@@ -92,7 +96,7 @@ int main(int argc, char *argv[])
 									 camera.get_position().y, player.get_animation().sheet_height, player.get_animation().sheet_width, player.get_animation().current_frame, 5.0f);
 
 		// draw enemy sprite
-		DrawingFunctions::DrawFrame(screen.game_renderer, enemy.get_sprite_sheet(), enemy.get_position().x, enemy.get_position().y, PlayerConstants::SPRITE_SCALE, player.get_flip_state(), camera.get_position().x,
+		DrawingFunctions::DrawFrame(screen.game_renderer, enemy.get_sprite_sheet(), enemy.get_position().x, enemy.get_position().y, PlayerConstants::SPRITE_SCALE, enemy.GetFlipState(), camera.get_position().x,
 									 camera.get_position().y, enemy.get_animation().sheet_height, enemy.get_animation().sheet_width, enemy.get_animation().current_frame, 5.0f);
 
 		//DrawingFunctions::draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.2f, player.get_flip_state(), camera.get_position().x, camera.get_position().y);
