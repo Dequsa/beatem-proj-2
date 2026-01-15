@@ -11,20 +11,14 @@ bool load_configurations()
     return success;
 }
 
-
 bool load_map_config(const char *file_path)
 {
-
 }
-
 
 bool load_player_config(const char *file_path)
 {
-
 }
-
 
 bool load_enemies_config(const char *file_path)
 {
-
 }

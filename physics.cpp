@@ -17,8 +17,8 @@ namespace MovementFunctions
             x = 0.0f;
 
         // bound y
-        if (y < 1163.0f - h) // floor top
-            y = 1163.0f - h;
+        if (y < floor_top - h) // floor top
+            y = floor_top - h;
 
         if (y > map_h - h) // bottom of the screen
             y = map_h - h;
@@ -113,11 +113,11 @@ namespace AttackFunctions
         return in_range;
     }
 
-    void attack(int &target_helth, float &source_cooldown, attack_t attack_move)
-    {
-        target_helth -= attack_move.dmg;
-        source_cooldown = attack_move.cooldown;
+    // void attack(int &target_helth, float &source_cooldown, attack_t attack_move)
+    // {
+    //     target_helth -= attack_move.dmg;
+    //     source_cooldown = attack_move.cooldown;
 
-        printf("Attack: %s\n", attack_move.name);
-    }
+    //     printf("Attack: %s\n", attack_move.name);
+    // }
 }

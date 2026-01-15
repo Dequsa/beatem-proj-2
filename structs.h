@@ -88,7 +88,18 @@ typedef struct
 
 namespace Attacks
 {
-    // name | damage (hitpoints) | cooldown (msec)
-    constexpr attack_t LIGHT{"Light Attack", 5, 1500};
-    constexpr attack_t HEAVY{"Heavy Attack", 15, 8000};
+    constexpr int ATTACKS_COUNT = 1;
+
+    enum class Number
+    {
+        LIGHT = 0,
+        HEAVY,
+
+
+        Count // gives count of all items
+    };
+
+    // name | damage | cooldown [sec]
+    constexpr attack_t LIGHT{"Light Attack", 5, 8};
+    constexpr attack_t HEAVY{"Heavy Attack", 15, 30};
 }   

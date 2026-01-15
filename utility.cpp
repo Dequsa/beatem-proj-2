@@ -81,7 +81,7 @@ namespace DrawingFunctions
 			DrawLine(screen, x + 1, i, l - 2, 1, 0, fillColor);
 	};
 
-	void draw_sprite(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y)
+	void DrawSprite(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y)
 	{
 
 		if (sprite == nullptr)
@@ -113,7 +113,7 @@ namespace DrawingFunctions
 		SDL_RenderCopyEx(screen, sprite, NULL, &dest, 0, NULL, flip);
 	};
 
-	void draw_background(SDL_Renderer *screen, SDL_Texture *background, float x, float y, float scale)
+	void DrawBackground(SDL_Renderer *screen, SDL_Texture *background, float x, float y, float scale)
 	{
 
 		if (background == nullptr)
@@ -131,7 +131,7 @@ namespace DrawingFunctions
 		SDL_RenderCopyEx(screen, background, &camera_rect, NULL, 0, NULL, SDL_FLIP_NONE);
 	};
 
-	void draw_frame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offset)
+	void DrawFrame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offset)
 	{
 		SDL_Rect dest;
 		dest.x = (int)(x - camera_x);
@@ -165,10 +165,11 @@ namespace InGameManagers
 
 		if (temp_surface == nullptr)
 		{
-			printf("err while loading player sprite : %s \n", SDL_GetError());
+			printf("err while loading sprite sheet : %s \n", SDL_GetError());
 		}
 		else
 		{
+			// set background to transparent from white
 			Uint32 colorkey = SDL_MapRGB(temp_surface->format, 255, 255, 255);
 			SDL_SetColorKey(temp_surface, SDL_TRUE, colorkey);
 
@@ -178,4 +179,21 @@ namespace InGameManagers
 		SDL_FreeSurface(temp_surface);
 		return new_texture;
 	}
+}
+
+namespace UtilityFunctions
+{
+    int GetStringLength(const char *string)
+    {
+        char c = 'A';
+        int n = 0;
+
+        while (c != '\0')
+        {
+            c = string[n];
+            ++n;
+        }
+
+        return n - 1;
+    }
 }

@@ -43,12 +43,18 @@ private:
     int health_;
     bool is_alive_;
     bool is_attacking_;
-    int attack_cd_;
+    float attack_cd_;
     attack_t current_attack_;
     animation_t anim_;
 
+    // sprite handling
     void update_animation_sprite();
+
+    // movement
     void move();
+
+    //attacks
+    void choose_attack();
     void attack_player(Player &p, const float dt);
 
 public:

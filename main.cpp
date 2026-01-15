@@ -9,6 +9,7 @@
 #include "player.h"
 #include "utility.h"
 #include "camera.h"
+#include "infobar.h"
 
 void handle_event(SDL_Event *e, bool *quit, Player &player)
 {
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
 	screen_create(&screen);
 
 	// initialization of classes
+	InfoBar infobar({0.0f, 0.0f}, {utility::SCREEN_WIDTH, 26});
 	Camera camera(0.0f, -950.0f, 1.3f, PlayerConstants::WALKING_SPEED);
 	Map game_map(screen.game_renderer, utility::MAP_PATH);
 	Player player(screen.game_renderer);
@@ -62,7 +64,6 @@ int main(int argc, char *argv[])
 			printf("Delta time: %f seconds\n", delta_time);
 		}
 
-		// SDL_SetRenderDrawColor(screen.game_renderer, 0, 0, 0, 255);
 		SDL_RenderClear(screen.game_renderer);
 
 		// SDL event handler
@@ -79,16 +80,19 @@ int main(int argc, char *argv[])
 
 		// entity movement
 		enemy.update(player, delta_time);
+
+		// draw infobar
+		infobar.update_infobar(0.0f, 0.0f, delta_time, screen.game_renderer);
 		
 		// draw background
-		DrawingFunctions::draw_background(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, CameraConstants::BACKGROUND_SIZE_RATIO);
+		DrawingFunctions::DrawBackground(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, CameraConstants::BACKGROUND_SIZE_RATIO);
 
 		// draw player sprite
-		DrawingFunctions::draw_frame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, player.get_scale(), player.get_flip_state(), camera.get_position().x,
+		DrawingFunctions::DrawFrame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, player.get_scale(), player.get_flip_state(), camera.get_position().x,
 									 camera.get_position().y, player.get_animation().sheet_height, player.get_animation().sheet_width, player.get_animation().current_frame, 5.0f);
 
 		// draw enemy sprite
-		DrawingFunctions::draw_frame(screen.game_renderer, enemy.get_sprite_sheet(), enemy.get_position().x, enemy.get_position().y, PlayerConstants::SPRITE_SCALE, player.get_flip_state(), camera.get_position().x,
+		DrawingFunctions::DrawFrame(screen.game_renderer, enemy.get_sprite_sheet(), enemy.get_position().x, enemy.get_position().y, PlayerConstants::SPRITE_SCALE, player.get_flip_state(), camera.get_position().x,
 									 camera.get_position().y, enemy.get_animation().sheet_height, enemy.get_animation().sheet_width, enemy.get_animation().current_frame, 5.0f);
 
 		//DrawingFunctions::draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.2f, player.get_flip_state(), camera.get_position().x, camera.get_position().y);

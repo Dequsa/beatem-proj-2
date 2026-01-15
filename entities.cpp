@@ -2,6 +2,8 @@
 #include "physics.h"
 #include "player.h"
 #include <cstdio>
+#include <cmath>
+#include <ctime>
 
 // all entity class initialization
 Entity::Entity(int id, float x, float y, type_t type) : type_(type), id_(id)
@@ -53,12 +55,36 @@ void Enemy::move()
 {
 }
 
+void Enemy::choose_attack()
+{
+    srand(time(nullptr));
+    int random_attack = rand() % static_cast<int>(Attacks::Number::Count);
+
+    switch (random_attack)
+    {
+    case static_cast<int>(Attacks::Number::LIGHT):
+        current_attack_ = Attacks::LIGHT;
+        break;
+
+    case static_cast<int>(Attacks::Number::HEAVY):
+        current_attack_ = Attacks::HEAVY;
+        break;
+    }
+}
+
 void Enemy::attack_player(Player &p, const float dt)
 {
-    if (AttackFunctions::check_hitbox(position_, size_, p.get_position(), p.get_size()) && !attack_cd_)
+    if (AttackFunctions::check_hitbox(position_, size_, p.get_position(), p.get_size()) && (attack_cd_ <= 0))
     {
-        p.recive_damage(10);
-        attack_cd_ = dt * 100000;
+        choose_attack();
+
+        if (utility::DEBUG_MODE)
+        {
+            printf("Current attack: %s | Dmg: %d | Cooldown set to: %f\n", current_attack_.name, current_attack_.dmg, current_attack_.cooldown);
+        }
+
+        p.take_damage(current_attack_.dmg);
+        attack_cd_ = current_attack_.cooldown;
     }
 }
 
@@ -67,8 +93,13 @@ void Enemy::update(Player &p, const float dt)
     // move();
     attack_player(p, dt);
 
-    if (attack_cd_)
-        attack_cd_--;
+    if (utility::DEBUG_MODE)
+    {
+        printf("Cooldown: %f\n", attack_cd_);
+    }
+
+    if (attack_cd_ > 0)
+        attack_cd_ -= dt;
 }
 
 // if distance between player and enemy is less or equal to screen width then enemy target player else not

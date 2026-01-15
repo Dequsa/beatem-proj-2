@@ -55,13 +55,11 @@ public:
     // move player sprite based on position
     void move(const SDL_Event &e, const float delta_time, const bool camera_state, const int map_width, const int map_heigth);
 
-    // perform attack
-    void attack(SDL_Event &e);
-
-    // recive damage
-    void recive_damage(int val);
+    // setters:
     
-    // getters
+    void take_damage(const int val);
+    
+    // getters:
     SDL_Texture* get_sprite_sheet() { return animations_.sprite_sheet; }
     position_t get_position() { return position_; }
     direction_t get_direction() { return current_direction_; }
