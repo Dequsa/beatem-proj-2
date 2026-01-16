@@ -131,7 +131,7 @@ namespace DrawingFunctions
 		SDL_RenderCopyEx(screen, background, &camera_rect, NULL, 0, NULL, SDL_FLIP_NONE);
 	};
 
-	void DrawFrame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offset)
+	void DrawFrame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, ActionSheet current_action, float offset)
 	{
 		SDL_Rect dest;
 		dest.x = static_cast<int>(x - camera_x);
@@ -143,7 +143,7 @@ namespace DrawingFunctions
 
 		// what part of the sprite sheet to render
 		src.x = current_frame * (int)w + offset;
-		src.y = 0;
+		src.y = static_cast<int>(current_action) * static_cast<int>(h);
 
 		// how big the cutout should the rectangle be
 		src.w = (int)w;

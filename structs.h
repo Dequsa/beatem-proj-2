@@ -102,4 +102,12 @@ namespace Attacks
     // name | damage | cooldown [sec]
     constexpr attack_t LIGHT{"Light Attack", 5, 8};
     constexpr attack_t HEAVY{"Heavy Attack", 15, 30};
-}   
+};   
+
+enum class ActionSheet
+{
+    walking_up = 8,
+    walking_left,
+    walking_down,
+    walking_right,
+};

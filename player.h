@@ -9,10 +9,10 @@ namespace PlayerConstants
     constexpr float WALKING_SPEED = 1.0f;
     constexpr float RUNNING_SPEED = 3.0f;
     constexpr int NAME_MAX_LENGTH = 128;
-    constexpr const char* SPRITE_PATH = "assets/sprites/player/player_spritesheet.bmp";
-    constexpr int SPRITE_WIDTH = 195;
-    constexpr int SPRITE_HEIGHT = 396;
-    constexpr float SPRITE_SCALE = 0.67f;
+    constexpr const char* SPRITE_PATH = "assets/sprites/player/character-spritesheet.bmp";
+    constexpr int SPRITE_WIDTH = 64;
+    constexpr int SPRITE_HEIGHT = 64;
+    constexpr float SPRITE_SCALE =5.0f;
 }
 
 class Player
@@ -24,6 +24,9 @@ private:
     int health_;
     attack_t current_attack_;
     direction_t current_direction_; // 0 not moving | 1 up | 2 down | 3 left | 4 right
+
+    ActionSheet current_action_;
+    
     SDL_RendererFlip flip_state_;
     animation_t animations_;
     float speed_;
@@ -68,4 +71,6 @@ public:
     float get_speed() { return speed_; }
     dimensions_t get_size() { return size_; }
     animation_t get_animation() { return animations_; }
+    ActionSheet get_current_action() { return current_action_; }
 };
+

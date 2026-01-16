@@ -48,8 +48,8 @@ namespace MovementFunctions
 
     void move_object_y(float velocity, float &y, float &scale, direction_t current_direction)
     {
-        float min_size = 0.51f;
-        float max_size = 0.67f;
+        float min_size = 4.5f;
+        float max_size = 5.0f;
         float distance = 200.0f * CameraConstants::BACKGROUND_SIZE_RATIO;
         float scale_step = (max_size - min_size) / distance;
 

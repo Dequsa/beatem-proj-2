@@ -1,12 +1,14 @@
 #pragma once
 #include <SDL.h>
 
+enum class ActionSheet;
+
 namespace utility
 {
-    inline bool DEBUG_MODE = false;
-    inline int SCREEN_WIDTH = 1440;
-    inline int SCREEN_HEIGHT = 932;
-    inline int MONITOR_REFRESH_RATE = 144;
+    const bool DEBUG_MODE = false;
+    const int SCREEN_WIDTH = 1440;
+    const int SCREEN_HEIGHT = 932;
+    const int MONITOR_REFRESH_RATE = 144;
     constexpr int NUMBER_OF_ENTITIES = 4;
     constexpr const char *MAP_PATH = "assets/maps/background.bmp";
 }
@@ -27,7 +29,7 @@ namespace DrawingFunctions
 
     void DrawBackground(SDL_Renderer *screen, SDL_Texture *background, float x, float y, float scale);
 
-    void DrawFrame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, float offeset);
+    void DrawFrame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, ActionSheet current_action, float offeset);
 }
 
 namespace InGameManagers

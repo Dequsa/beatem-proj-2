@@ -17,25 +17,18 @@ Player::Player(SDL_Renderer *screen) : animations_{},
 
     animations_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
 
-    // get sprite size
-    int h = 0;
-    int w = 0;
-    if (SDL_QueryTexture(animations_.sprite_sheet, NULL, NULL, &w, &h))
-    {
-        printf("Error querying texture: %s\n", SDL_GetError());
-        return;
-    }
-
     scale_ = PlayerConstants::SPRITE_SCALE;
     size_.height = PlayerConstants::SPRITE_HEIGHT * scale_;
     size_.width = PlayerConstants::SPRITE_WIDTH * scale_;
 
     // animation initialization
-    animations_.sheet_height = h;
-    animations_.sheet_width = w * 0.2f; // 1 out of 5 so its 1/5th of the whole frame's width
+    animations_.sheet_height = PlayerConstants::SPRITE_HEIGHT;
+    animations_.sheet_width = PlayerConstants::SPRITE_WIDTH;
     animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
-    animations_.total_frames = 5;
+    animations_.total_frames = 8;
     animations_.current_frame = 0;
+
+    current_action_ = ActionSheet::walking_up;
 }
 
 // Player class destructor
@@ -75,18 +68,22 @@ void Player::handle_controls()
     if (state[SDL_SCANCODE_UP]) // move up
     {
         current_direction_ = direction_t::DIRECTION_UP;
+        current_action_ = ActionSheet::walking_up;
     }
     else if (state[SDL_SCANCODE_DOWN]) // move down
     {
         current_direction_ = direction_t::DIRECTION_DOWN;
+        current_action_ = ActionSheet::walking_down;
     }
     else if (state[SDL_SCANCODE_LEFT]) // move left
     {
         current_direction_ = direction_t::DIRECTION_LEFT;
+        current_action_ = ActionSheet::walking_left;
     }
     else if (state[SDL_SCANCODE_RIGHT]) // move right
     {
         current_direction_ = direction_t::DIRECTION_RIGHT;
+        current_action_ = ActionSheet::walking_right;
     }
     else
     {
