@@ -23,7 +23,7 @@ private:
     float update_timer(float dt);
 
 public:
-    InfoBar(float x, float y, float h, float w);
+    InfoBar(float x, float y, int h, int w);
     ~InfoBar();
 
     // draw info bar on the screen

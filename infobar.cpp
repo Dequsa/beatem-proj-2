@@ -3,7 +3,7 @@
 #include "string.h"
 #include <cstdio>
 
-InfoBar::InfoBar(float x, float y, float h, float w) : pos_{x, y},size_{h, w}
+InfoBar::InfoBar(float x, float y, int h, int w) : pos_{x, y},size_{h, w}
 {
     int max_lenght_string = strlen(InfoBarConstants::CONTROLS);
     text_ = new char[max_lenght_string];
