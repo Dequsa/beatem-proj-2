@@ -24,7 +24,7 @@ void Camera::bound_x(float map_width)
     // right side bound
     if (position_.x + utility::SCREEN_WIDTH > map_width)
     {
-        position_.x = map_width - utility::SCREEN_WIDTH;
+        position_.x = map_width - utility::SCREEN_WIDTH + 200.0f;
     }
 }
 

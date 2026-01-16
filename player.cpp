@@ -10,25 +10,33 @@ Player::Player(SDL_Renderer *screen) : animations_{},
                                        position_{utility::SCREEN_HEIGHT / 4.0f, utility::SCREEN_WIDTH / 4.0f, 0.0f},
                                        health_(100),
                                        current_direction_(direction_t::DIRECTION_NONE),
-                                       flip_state_(SDL_FLIP_NONE)
+                                       flip_state_(SDL_FLIP_NONE),
+                                       is_attacking_(false)
 {
     name_ = new char[PlayerConstants::NAME_MAX_LENGTH]{};
     strcpy(name_, PlayerConstants::DEFAULT_NAME);
 
-    animations_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
-
+    // hitbox size
     scale_ = PlayerConstants::SPRITE_SCALE;
     size_.height = PlayerConstants::SPRITE_HEIGHT * scale_;
     size_.width = PlayerConstants::SPRITE_WIDTH * scale_;
 
     // animation initialization
-    animations_.sheet_height = PlayerConstants::SPRITE_HEIGHT;
-    animations_.sheet_width = PlayerConstants::SPRITE_WIDTH;
-    animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
-    animations_.total_frames = 8;
-    animations_.current_frame = 0;
+    animations_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
 
-    current_action_ = ActionSheet::walking_up;
+    animations_.total_frames = new int[PlayerConstants::ANIMATION_COUNT];
+
+    animations_.frame_height = PlayerConstants::SPRITE_HEIGHT;
+    animations_.frame_width = PlayerConstants::SPRITE_WIDTH;
+
+    animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
+    animations_.current_frame = 0;
+    animations_.current_action = ActionSheet::walk_up;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        animations_.total_frames[static_cast<int>(ActionSheet::walk_up) + i] = 8;
+    }
 }
 
 // Player class destructor
@@ -38,6 +46,12 @@ Player::~Player()
     {
         delete[] name_;
         name_ = nullptr;
+    }
+    // free animations stuff
+    if (animations_.total_frames != nullptr)
+    {
+        delete[] animations_.total_frames;
+        animations_.total_frames = nullptr;
     }
 }
 
@@ -53,11 +67,15 @@ void Player::update_sprite_animation(const float delta_time)
         animations_.timer = 0.0f;
 
         // loop back to first frame if at the end
-        if (animations_.current_frame >= animations_.total_frames)
+        if (animations_.current_frame >= animations_.total_frames[static_cast<int>(animations_.current_action)])
         {
             animations_.current_frame = 0;
         }
     }
+}
+
+void Player::choose_attack_anim()
+{
 }
 
 void Player::handle_controls()
@@ -68,46 +86,58 @@ void Player::handle_controls()
     if (state[SDL_SCANCODE_UP]) // move up
     {
         current_direction_ = direction_t::DIRECTION_UP;
-        current_action_ = ActionSheet::walking_up;
+        animations_.current_action = ActionSheet::walk_up;
     }
     else if (state[SDL_SCANCODE_DOWN]) // move down
     {
         current_direction_ = direction_t::DIRECTION_DOWN;
-        current_action_ = ActionSheet::walking_down;
+        animations_.current_action = ActionSheet::walk_down;
     }
     else if (state[SDL_SCANCODE_LEFT]) // move left
     {
         current_direction_ = direction_t::DIRECTION_LEFT;
-        current_action_ = ActionSheet::walking_left;
+        animations_.current_action = ActionSheet::walk_left;
     }
     else if (state[SDL_SCANCODE_RIGHT]) // move right
     {
         current_direction_ = direction_t::DIRECTION_RIGHT;
-        current_action_ = ActionSheet::walking_right;
+        animations_.current_action = ActionSheet::walk_right;
+    }
+    else if (state[SDL_SCANCODE_RIGHT])
+    {
+        choose_attack_anim();
     }
     else
     {
         current_direction_ = direction_t::DIRECTION_NONE;
+        animations_.current_frame = 0;
     }
 }
 
 void Player::update_flip_state()
 {
-    switch (current_direction_)
-    {
-    case direction_t::DIRECTION_LEFT:
-        flip_state_ = SDL_FLIP_HORIZONTAL;
-        break;
-    case direction_t::DIRECTION_RIGHT:
-        flip_state_ = SDL_FLIP_NONE;
-        break;
-    }
+    // switch (current_direction_)
+    // {
+    // case direction_t::DIRECTION_LEFT:
+    //     flip_state_ = SDL_FLIP_HORIZONTAL;
+    //     break;
+    // case direction_t::DIRECTION_RIGHT:
+    //     flip_state_ = SDL_FLIP_NONE;
+    //     break;
+    //}
+
+    flip_state_ = SDL_FLIP_NONE;
 }
 
 // move player sprite on the plane based on speed delta time and direction
 void Player::move(const SDL_Event &e, const float delta_time, const bool camera_state, const int map_width, const int map_heigth)
 {
     handle_controls();
+
+    if (is_attacking_)
+    {
+        return;
+    }
 
     speed_ = MovementFunctions::calculate_velocity(delta_time, PlayerConstants::WALKING_SPEED);
 

@@ -38,14 +38,17 @@ Enemy::Enemy(int id, float x, float y, SDL_Renderer *screen) : Entity(id, x, y, 
 
     // animation initialization
     anim_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
-    anim_.total_frames = 5;
+    anim_.total_frames = new int[1]{};
     anim_.current_frame = 0;
-    anim_.sheet_height = h;
-    anim_.sheet_width = w * 0.2f; //(float)(1 / anim_.total_frames); // same as players
+    anim_.frame_height = h;
+    anim_.frame_width = w * 0.2f; //(float)(1 / anim_.total_frames); // same as players
 }
 
 Enemy::~Enemy()
 {
+    delete[] anim_.total_frames;
+    anim_.total_frames = nullptr;
+    
 }
 
 void Enemy::update_animation_sprite()

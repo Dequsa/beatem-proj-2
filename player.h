@@ -6,13 +6,14 @@
 namespace PlayerConstants
 {
     constexpr const char* DEFAULT_NAME = "Brawler";
-    constexpr float WALKING_SPEED = 1.0f;
+    constexpr float WALKING_SPEED = 0.50f;
     constexpr float RUNNING_SPEED = 3.0f;
     constexpr int NAME_MAX_LENGTH = 128;
     constexpr const char* SPRITE_PATH = "assets/sprites/player/character-spritesheet.bmp";
     constexpr int SPRITE_WIDTH = 64;
     constexpr int SPRITE_HEIGHT = 64;
-    constexpr float SPRITE_SCALE =5.0f;
+    constexpr float SPRITE_SCALE = 5.0f;
+    constexpr int ANIMATION_COUNT = 72;
 }
 
 class Player
@@ -24,14 +25,12 @@ private:
     int health_;
     attack_t current_attack_;
     direction_t current_direction_; // 0 not moving | 1 up | 2 down | 3 left | 4 right
-
-    ActionSheet current_action_;
-    
     SDL_RendererFlip flip_state_;
     animation_t animations_;
     float speed_;
     dimensions_t size_;
     float scale_;
+    bool is_attacking_;
 
     // handle player controls / key-state
     void handle_controls();
@@ -39,11 +38,8 @@ private:
     // flips player
     void update_flip_state();
 
-    // // clamp by right left
-    // void bound_sides(int map_width);
-    
-    // // clamp by top bottom
-    // void bound_top(int map_heigth);
+    // which way to attack
+    void choose_attack_anim();
 
 public:
     // player class constructor
@@ -71,6 +67,6 @@ public:
     float get_speed() { return speed_; }
     dimensions_t get_size() { return size_; }
     animation_t get_animation() { return animations_; }
-    ActionSheet get_current_action() { return current_action_; }
+    ActionSheet get_current_action() { return animations_.current_action; }
 };
 
