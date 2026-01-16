@@ -3,25 +3,44 @@
 #include <cmath>
 #include <cstdio>
 
+const float floor_top = 1101.0f; // map_height * scale - 460.0f * scale
+const float floor_bottom = utility::SCREEN_HEIGHT;
+
 namespace MovementFunctions
 {
     // bounding system
 
-    void bound_entity(float &x, float &y, int w, int h, int map_w, int map_h)
+    void bound_entity(position_t &pos, SDL_FRect &collision_box, int map_w, int map_h)
     {
-        // bound x
-        if (x + w > map_w) // right side of the map
-            x = map_w - w;
+        // --- X AXIS (Walls) ---
+        if (collision_box.x < 0)
+        {
+            pos.x -= collision_box.x;
+            collision_box.x = 0;
+        }
+        if (collision_box.x + collision_box.w > map_w)
+        {
+            float overlap = (collision_box.x + collision_box.w) - map_w;
+            pos.x -= overlap;
+            collision_box.x -= overlap;
+        }
 
-        if (x < 0.0f) // left side
-            x = 0.0f;
+        // --- Y AXIS (The Playable Floor Zone) ---
+        // If player walks too far UP (into the background)
+        if (collision_box.y < floor_top)
+        {
+            float overlap = floor_top - collision_box.y;
+            pos.y += overlap;
+            collision_box.y = floor_top;
+        }
 
-        // bound y
-        if (y < floor_top - h) // floor top
-            y = floor_top - h;
-
-        if (y > map_h - h) // bottom of the screen
-            y = map_h - h;
+        // If player walks too far DOWN (into the foreground/out of screen)
+        if (collision_box.y + collision_box.h > floor_bottom)
+        {
+            float overlap = (collision_box.y + collision_box.h) - floor_bottom;
+            pos.y -= overlap;
+            collision_box.y -= overlap;
+        }
     }
 
     // calculating velocity
@@ -48,18 +67,18 @@ namespace MovementFunctions
 
     void move_object_y(float velocity, float &y, float &scale, direction_t current_direction)
     {
-        float min_size = 0.51f;
-        float max_size = 0.67f;
-        float distance = 200.0f * CameraConstants::BACKGROUND_SIZE_RATIO;
+        float min_size = 2.8f;
+        float max_size = 3.0f;
+        float distance = 160.0f * CameraConstants::BACKGROUND_SIZE_RATIO;
         float scale_step = (max_size - min_size) / distance;
 
         switch (current_direction)
         {
         case direction_t::DIRECTION_UP:
             y -= velocity;
-           
+
             scale -= scale_step;
-            
+
             if (scale <= min_size)
             {
                 scale = min_size;
@@ -67,7 +86,7 @@ namespace MovementFunctions
             break;
         case direction_t::DIRECTION_DOWN:
             y += velocity;
-           
+
             scale += scale_step;
 
             if (scale >= max_size)
@@ -80,7 +99,7 @@ namespace MovementFunctions
         }
     }
 
-    void move_object(float velocity, float &x, float &y, float &scale, direction_t current_direction, int w, int h, int map_w, int map_h)
+    void move_object(float velocity, float &x, float &y, float &scale, direction_t current_direction, int w, int h, float offset_left, float offset_right, int map_w, int map_h)
     {
         if (current_direction == direction_t::DIRECTION_NONE)
         {
@@ -89,7 +108,7 @@ namespace MovementFunctions
 
         move_object_x(velocity, x, current_direction);
         move_object_y(velocity, y, scale, current_direction);
-        bound_entity(x, y, w, h, map_w, map_h);
+        // bound_entity(x, y, w, h, map_w, map_h, offset_left, offset_right);
     }
 }
 

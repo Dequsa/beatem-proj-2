@@ -4,7 +4,7 @@
 
 namespace CameraConstants 
 {
-    inline float BACKGROUND_SIZE_RATIO = (utility::SCREEN_WIDTH / 2816.0f); // background size ratio compared to screen size |   SCREEN_WIDTH / BACKGROUND_WIDTH
+    const float BACKGROUND_SIZE_RATIO = (utility::SCREEN_WIDTH / 2816.0f); // background size ratio compared to screen size |   SCREEN_WIDTH / BACKGROUND_WIDTH
 }
 
 // camera is going to be moving everything in the game world based on player position e.g background positionand other entities
@@ -17,14 +17,14 @@ private:
     float zoom_;
     float speed_;
     void bound_x(float map_width);
-    void bound_y(float map_heigth);
+    void bound_y(float map_height);
 public:
     Camera(float x, float y, float zoom, float speed); // this sets the camera position and dimensions
 
     ~Camera();
 
     // update camera position
-    void update(position_t player, float map_width, float map_heigth);
+    void update(position_t player, float map_width, float map_height);
 
     // getters
     position_t get_position() { return position_; }

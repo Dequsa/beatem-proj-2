@@ -21,15 +21,17 @@ Enemy::Enemy(int id, float x, float y, SDL_Renderer *screen) : Entity(id, x, y, 
                                                                flip_(SDL_FLIP_NONE)
 {
 
-    anim_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, EnemyConstants::SPRITE_PATH);
-
-    // get sprite size
-    int h = 0;
     int w = 0;
-    if (SDL_QueryTexture(anim_.sprite_sheet, NULL, NULL, &w, &h))
-    {
-        return;
-    }
+    int h = 0;
+    anim_.sprite_sheet = InGameManagers::LoadTexture(screen, EnemyConstants::SPRITE_PATH, w, h);
+
+    // // get sprite size
+    // int h = 0;
+    // int w = 0;
+    // if (SDL_QueryTexture(anim_.sprite_sheet, NULL, NULL, &w, &h))
+    // {
+    //     return;
+    // }
 
     size_.height = EnemyConstants::SPRITE_HEIGHT * 0.67f;
     size_.width = EnemyConstants::SPRITE_WIDTH * 0.67f;

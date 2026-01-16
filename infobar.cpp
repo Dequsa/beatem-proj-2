@@ -3,7 +3,7 @@
 #include "string.h"
 #include <cstdio>
 
-InfoBar::InfoBar(position_t position, dimensions_t size) : pos_(position), size_(size)
+InfoBar::InfoBar(float x, float y, float h, float w) : pos_{x, y},size_{h, w}
 {
     int max_lenght_string = strlen(InfoBarConstants::CONTROLS);
     text_ = new char[max_lenght_string];
@@ -30,8 +30,14 @@ float InfoBar::update_timer(float dt)
 void InfoBar::display_timer(SDL_Renderer *renderer)
 {
     // DrawingFunctions::DrawString(surface_, size_.width / 2 - strlen(text_) * 8 / 2, pos_.y, text_, charset_);
-    // SDL_UpdateTexture(texture_, NULL, surface_->pixels, surface_->pitch);
-    // SDL_RenderCopy(renderer, texture_, NULL, NULL);
+    // if (!SDL_UpdateTexture(texture_, NULL, surface_->pixels, surface_->pitch))
+    // {
+    //     printf("Err while loading texture for info bar.");
+    // }
+    // if (SDL_RenderCopy(renderer, texture_, NULL, NULL))
+    // {
+    //     printf("Err while copying texture for info bar.");
+    // }
 }
 
 void InfoBar::update_infobar(const float player_health, const float enemy_health, float delta_time, SDL_Renderer *renderer)

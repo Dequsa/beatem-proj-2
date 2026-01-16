@@ -4,9 +4,10 @@ bool load_configurations()
 {
     bool success = true;
 
-    success = load_map_config(config_loader::CONFIG_MAP_LOCATION);
-    success = load_player_config(config_loader::CONFIG_PLAYER_STATS_LOCATION);
-    success = load_enemies_config(config_loader::CONFIG_ENEMIES_LOCATION);
+    // WIP
+    success = load_map_config(ConfigConstants::CONFIG_MAP_LOCATION);
+    success = load_player_config(ConfigConstants::CONFIG_PLAYER_STATS_LOCATION);
+    success = load_enemies_config(ConfigConstants::CONFIG_ENEMIES_LOCATION);
 
     return success;
 }

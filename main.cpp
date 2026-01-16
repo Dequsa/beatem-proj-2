@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	screen_create(&screen);
 
 	// initialization of classes
-	InfoBar infobar({0.0f, 0.0f}, {utility::SCREEN_WIDTH, 26});
+	InfoBar infobar(0.0f, 0.0f, utility::SCREEN_WIDTH, 26);
 	Camera camera(0.0f, -950.0f, 1.3f, PlayerConstants::WALKING_SPEED);
 	Map game_map(screen.game_renderer, utility::MAP_PATH);
 	Player player(screen.game_renderer);
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
 		// draw player sprite
 		DrawingFunctions::DrawFrame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, player.get_scale(), player.get_flip_state(), camera.get_position().x,
-									 camera.get_position().y, player.get_animation().sheet_height, player.get_animation().sheet_width, player.get_animation().current_frame, 5.0f);
+									 camera.get_position().y, player.get_animation().sheet_height, player.get_animation().sheet_width, player.get_animation().current_frame, player.get_offset_left());
 
 		// draw enemy sprite
 		DrawingFunctions::DrawFrame(screen.game_renderer, enemy.get_sprite_sheet(), enemy.get_position().x, enemy.get_position().y, PlayerConstants::SPRITE_SCALE, enemy.GetFlipState(), camera.get_position().x,

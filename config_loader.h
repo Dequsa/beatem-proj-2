@@ -1,6 +1,6 @@
 #pragma once
 
-namespace config_loader
+namespace ConfigConstants
 {
     constexpr char* CONFIG_MAP_LOCATION = "/configs/maps.cfg";
     constexpr char* CONFIG_PLAYER_STATS_LOCATION = "/config/player.cfg";

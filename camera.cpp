@@ -5,7 +5,7 @@ Camera::Camera(float x, float y, float zoom, float speed) : position_{x, y, 0.0f
 {
     // put camera in the middle so the player is in the middle of the screen
     size_.height = utility::SCREEN_HEIGHT / 2;
-    size_.width = utility::SCREEN_WIDTH / 2;
+    size_.width = utility::SCREEN_WIDTH / 2 - 200.0f;
 }
 
 Camera::~Camera()
@@ -28,7 +28,7 @@ void Camera::bound_x(float map_width)
     }
 }
 
-void Camera::bound_y(float map_heigth)
+void Camera::bound_y(float map_height)
 {
     // top bound
     if (position_.y < 0)
@@ -37,13 +37,13 @@ void Camera::bound_y(float map_heigth)
     }
 
     // bottom bound
-    if (position_.y + utility::SCREEN_HEIGHT > map_heigth)
+    if (position_.y + utility::SCREEN_HEIGHT > map_height) 
     {
-        position_.y = map_heigth - utility::SCREEN_HEIGHT;
+        position_.y = map_height - utility::SCREEN_HEIGHT;
     }
 }
 
-void Camera::update(position_t player, float map_width, float map_heigth)
+void Camera::update(position_t player, float map_width, float map_height)
 {
     position_.x = player.x - size_.width;
     position_.y = player.y - size_.height;
@@ -52,5 +52,5 @@ void Camera::update(position_t player, float map_width, float map_heigth)
     bound_x(map_width);
 
     // check top bottom
-    bound_y(map_heigth);
+    bound_y(map_height);
 }

@@ -15,27 +15,39 @@ Player::Player(SDL_Renderer *screen) : animations_{},
     name_ = new char[PlayerConstants::NAME_MAX_LENGTH]{};
     strcpy(name_, PlayerConstants::DEFAULT_NAME);
 
-    animations_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
-
-    // get sprite size
     int h = 0;
     int w = 0;
-    if (SDL_QueryTexture(animations_.sprite_sheet, NULL, NULL, &w, &h))
-    {
-        printf("Error querying texture: %s\n", SDL_GetError());
-        return;
-    }
+    animations_.sprite_sheet = InGameManagers::LoadTexture(screen, PlayerConstants::SPRITE_PATH, w, h);
+
+    // // get sprite size
+
+    // if (SDL_QueryTexture(animations_.sprite_sheet, NULL, NULL, &w, &h))
+    // {
+    //     printf("Error querying texture: %s\n", SDL_GetError());
+    //     return;
+    // }
 
     scale_ = PlayerConstants::SPRITE_SCALE;
     size_.height = PlayerConstants::SPRITE_HEIGHT * scale_;
     size_.width = PlayerConstants::SPRITE_WIDTH * scale_;
+    offset_left_ = PlayerConstants::SPRITE_OFFSET * scale_;
+    offset_right_ = 45 * scale_;
 
     // animation initialization
-    animations_.sheet_height = h;
-    animations_.sheet_width = w * 0.2f; // 1 out of 5 so its 1/5th of the whole frame's width
+    animations_.sheet_height = h;         // frame height and width
+    animations_.sheet_width = w * 0.125f; // 1 out of 8 so its 1/8th of the whole sheet's width
     animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
-    animations_.total_frames = 5;
+    animations_.total_frames = 8;
     animations_.current_frame = 0;
+
+    // hitbox
+    collision_box_ =
+    {
+        position_.x + (offset_left_ * scale_),
+        position_.y,
+        PlayerConstants::SPRITE_WIDTH * scale_, // real width
+        PlayerConstants::SPRITE_HEIGHT * scale_ // real heigth
+    };
 }
 
 // Player class destructor
@@ -62,7 +74,7 @@ void Player::update_sprite_animation(const float delta_time)
         // loop back to first frame if at the end
         if (animations_.current_frame >= animations_.total_frames)
         {
-            animations_.current_frame = 0;
+            animations_.current_frame = 1;
         }
     }
 }
@@ -107,6 +119,14 @@ void Player::update_flip_state()
     }
 }
 
+void Player::update_collsion_box()
+{
+    collision_box_.x = position_.x + (offset_left_ * scale_);
+    collision_box_.y = position_.y; // Add a top offset if needed
+    collision_box_.w = PlayerConstants::SPRITE_WIDTH * scale_;
+    collision_box_.h = PlayerConstants::SPRITE_HEIGHT * scale_;
+}
+
 // move player sprite on the plane based on speed delta time and direction
 void Player::move(const SDL_Event &e, const float delta_time, const bool camera_state, const int map_width, const int map_heigth)
 {
@@ -116,8 +136,14 @@ void Player::move(const SDL_Event &e, const float delta_time, const bool camera_
 
     update_flip_state();
 
-    MovementFunctions::move_object(speed_, position_.x, position_.y, scale_, current_direction_, size_.width, size_.height, map_width, map_heigth);
+    // move around
+    MovementFunctions::move_object(speed_, position_.x, position_.y, scale_, current_direction_, size_.width, size_.height, offset_left_, offset_right_, map_width, map_heigth);
 
+    update_collsion_box();
+
+    MovementFunctions::bound_entity(position_, collision_box_, map_width, map_heigth);
+
+    printf("W: %d | H: %d | X: %f | Y: %f\n", size_.width, size_.height, position_.x, position_.y);
     if (current_direction_ != direction_t::DIRECTION_NONE)
     {
         update_sprite_animation(delta_time);

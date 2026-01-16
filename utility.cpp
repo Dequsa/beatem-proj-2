@@ -27,6 +27,7 @@ namespace DrawingFunctions
 			d.y = y;
 			SDL_BlitSurface(charset, &s, screen, &d);
 			x += 8;
+			printf("Character printed: %c", c);
 			text++;
 		};
 	};
@@ -136,18 +137,18 @@ namespace DrawingFunctions
 		SDL_Rect dest;
 		dest.x = static_cast<int>(x - camera_x);
 		dest.y = static_cast<int>(y - camera_y);
-		dest.w = w * scale; // hight of the sprite sheet scaled
-		dest.h = h * scale;
+		dest.w = static_cast<int>(w * scale); // hight of the sprite sheet scaled
+		dest.h = static_cast<int>(h * scale);
 
 		SDL_Rect src;
 
 		// what part of the sprite sheet to render
-		src.x = current_frame * (int)w + offset;
+		src.x = current_frame * static_cast<int>(w);
 		src.y = 0;
 
 		// how big the cutout should the rectangle be
-		src.w = (int)w;
-		src.h = (int)h;
+		src.w = static_cast<int>(w);
+		src.h = static_cast<int>(h);
 
 		if (utility::DEBUG_MODE)
 			printf("Frame: %d | SrcRect X: %d | Width: %d\n", current_frame, src.x, src.w);
@@ -158,7 +159,7 @@ namespace DrawingFunctions
 
 namespace InGameManagers
 {
-	SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path)
+	SDL_Texture *LoadTexture(SDL_Renderer *screen, const char *path, int &w, int &h)
 	{
 		SDL_Surface *temp_surface = SDL_LoadBMP(path);
 		SDL_Texture *new_texture = nullptr;
@@ -175,6 +176,10 @@ namespace InGameManagers
 
 			// create texture from surface
 			new_texture = SDL_CreateTextureFromSurface(screen, temp_surface);
+			
+			// assign the dimensions
+			w = temp_surface->w;
+			h = temp_surface->h;
 		}
 		SDL_FreeSurface(temp_surface);
 		return new_texture;
@@ -183,17 +188,17 @@ namespace InGameManagers
 
 namespace UtilityFunctions
 {
-    int GetStringLength(const char *string)
-    {
-        char c = 'A';
-        int n = 0;
+	int GetStringLength(const char *string)
+	{
+		char c = 'A';
+		int n = 0;
 
-        while (c != '\0')
-        {
-            c = string[n];
-            ++n;
-        }
+		while (c != '\0')
+		{
+			c = string[n];
+			++n;
+		}
 
-        return n - 1;
-    }
+		return n - 1;
+	}
 }
