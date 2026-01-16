@@ -13,7 +13,7 @@ namespace PlayerConstants
     constexpr int SPRITE_WIDTH = 64;
     constexpr int SPRITE_HEIGHT = 64;
     constexpr float SPRITE_SCALE = 5.0f;
-    constexpr int ANIMATION_COUNT = 72;
+    constexpr int ANIMATION_COUNT = 64;
 }
 
 class Player
@@ -25,6 +25,7 @@ private:
     int health_;
     attack_t current_attack_;
     direction_t current_direction_; // 0 not moving | 1 up | 2 down | 3 left | 4 right
+    direction_t last_direction_;    // 0 not moving | 1 up | 2 down | 3 left | 4 right
     SDL_RendererFlip flip_state_;
     animation_t animations_;
     float speed_;
@@ -35,11 +36,9 @@ private:
     // handle player controls / key-state
     void handle_controls();
 
-    // flips player
-    void update_flip_state();
-
     // which way to attack
-    void choose_attack_anim();
+    void choose_direction_light_attack();
+    void choose_direction_heavy_attack();
 
 public:
     // player class constructor

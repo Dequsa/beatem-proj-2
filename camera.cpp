@@ -5,7 +5,7 @@ Camera::Camera(float x, float y, float zoom, float speed) : position_{x, y, 0.0f
 {
     // put camera in the middle so the player is in the middle of the screen
     size_.height = utility::SCREEN_HEIGHT / 2;
-    size_.width = utility::SCREEN_WIDTH / 2;
+    size_.width = utility::SCREEN_WIDTH / 2 - 200.0f;
 }
 
 Camera::~Camera()
@@ -24,7 +24,7 @@ void Camera::bound_x(float map_width)
     // right side bound
     if (position_.x + utility::SCREEN_WIDTH > map_width)
     {
-        position_.x = map_width - utility::SCREEN_WIDTH + 200.0f;
+        position_.x = map_width - utility::SCREEN_WIDTH;
     }
 }
 

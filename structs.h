@@ -185,14 +185,4 @@ enum class ActionSheet
     one_handed_backslash_left,
     one_handed_backslash_down,
     one_handed_backslash_right,
-
-    one_handed_halfslash_up,
-    one_handed_halfslash_left,
-    one_handed_halfslash_down,
-    one_handed_halfslash_right,
-
-    slash_oversize_up,
-    slash_oversize_left,
-    slash_oversize_down,
-    slash_oversize_right
 };

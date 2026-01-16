@@ -48,9 +48,11 @@ namespace MovementFunctions
 
     void move_object_y(float velocity, float &y, float &scale, direction_t current_direction)
     {
-        float min_size = 4.5f;
+        float min_size = 3.5f;
         float max_size = 5.0f;
-        float distance = 200.0f * CameraConstants::BACKGROUND_SIZE_RATIO;
+        float floor_size = 1147.0f;
+
+        float distance = floor_size * CameraConstants::BACKGROUND_SIZE_RATIO;
         float scale_step = (max_size - min_size) / distance;
 
         switch (current_direction)
@@ -90,6 +92,11 @@ namespace MovementFunctions
         move_object_x(velocity, x, current_direction);
         move_object_y(velocity, y, scale, current_direction);
         bound_entity(x, y, w, h, map_w, map_h);
+        
+        if (utility::DEBUG_MODE)
+        {
+            printf("X: %f | Y:%f\n", x, y);
+        }
     }
 }
 
@@ -112,12 +119,4 @@ namespace AttackFunctions
 
         return in_range;
     }
-
-    // void attack(int &target_helth, float &source_cooldown, attack_t attack_move)
-    // {
-    //     target_helth -= attack_move.dmg;
-    //     source_cooldown = attack_move.cooldown;
-
-    //     printf("Attack: %s\n", attack_move.name);
-    // }
 }

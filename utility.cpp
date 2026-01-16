@@ -176,6 +176,10 @@ namespace InGameManagers
 			// create texture from surface
 			new_texture = SDL_CreateTextureFromSurface(screen, temp_surface);
 		}
+		if (new_texture == nullptr)
+		{
+			printf("err while loading sprite sheet : %s \n", SDL_GetError());
+		}
 		SDL_FreeSurface(temp_surface);
 		return new_texture;
 	}

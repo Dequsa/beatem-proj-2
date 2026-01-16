@@ -33,9 +33,15 @@ Player::Player(SDL_Renderer *screen) : animations_{},
     animations_.current_frame = 0;
     animations_.current_action = ActionSheet::walk_up;
 
+    for (int i = 0; i < PlayerConstants::ANIMATION_COUNT; ++i)
+    {
+        animations_.total_frames[i] = 1; // so it not crash
+    }
+
     for (int i = 0; i < 4; ++i)
     {
         animations_.total_frames[static_cast<int>(ActionSheet::walk_up) + i] = 8;
+        animations_.total_frames[static_cast<int>(ActionSheet::slash_up) + i] = 6;
     }
 }
 
@@ -74,8 +80,42 @@ void Player::update_sprite_animation(const float delta_time)
     }
 }
 
-void Player::choose_attack_anim()
+void Player::choose_direction_light_attack()
 {
+    switch (last_direction_)
+    {
+    case direction_t::DIRECTION_UP:
+        animations_.current_action = ActionSheet::slash_up;
+        break;
+    case direction_t::DIRECTION_LEFT:
+        animations_.current_action = ActionSheet::slash_left;
+        break;
+    case direction_t::DIRECTION_DOWN:
+        animations_.current_action = ActionSheet::slash_down;
+        break;
+    case direction_t::DIRECTION_RIGHT:
+        animations_.current_action = ActionSheet::slash_right;
+        break;
+    }
+}
+
+void Player::choose_direction_heavy_attack()
+{
+    switch (last_direction_)
+    {
+    case direction_t::DIRECTION_UP:
+        animations_.current_action = ActionSheet::slash_up;
+        break;
+    case direction_t::DIRECTION_LEFT:
+        animations_.current_action = ActionSheet::slash_left;
+        break;
+    case direction_t::DIRECTION_DOWN:
+        animations_.current_action = ActionSheet::slash_down;
+        break;
+    case direction_t::DIRECTION_RIGHT:
+        animations_.current_action = ActionSheet::slash_right;
+        break;
+    }
 }
 
 void Player::handle_controls()
@@ -83,50 +123,56 @@ void Player::handle_controls()
     // get what key is pressed wihtout this lag when holding down key
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
-    if (state[SDL_SCANCODE_UP]) // move up
+    if (!is_attacking_)
     {
-        current_direction_ = direction_t::DIRECTION_UP;
-        animations_.current_action = ActionSheet::walk_up;
-    }
-    else if (state[SDL_SCANCODE_DOWN]) // move down
-    {
-        current_direction_ = direction_t::DIRECTION_DOWN;
-        animations_.current_action = ActionSheet::walk_down;
-    }
-    else if (state[SDL_SCANCODE_LEFT]) // move left
-    {
-        current_direction_ = direction_t::DIRECTION_LEFT;
-        animations_.current_action = ActionSheet::walk_left;
-    }
-    else if (state[SDL_SCANCODE_RIGHT]) // move right
-    {
-        current_direction_ = direction_t::DIRECTION_RIGHT;
-        animations_.current_action = ActionSheet::walk_right;
-    }
-    else if (state[SDL_SCANCODE_RIGHT])
-    {
-        choose_attack_anim();
-    }
-    else
-    {
-        current_direction_ = direction_t::DIRECTION_NONE;
-        animations_.current_frame = 0;
-    }
-}
+        if (state[SDL_SCANCODE_UP]) // move up
+        {
+            current_direction_ = direction_t::DIRECTION_UP;
+            last_direction_ = current_direction_;
+            animations_.current_action = ActionSheet::walk_up;
+        }
+        else if (state[SDL_SCANCODE_DOWN]) // move down
+        {
+            current_direction_ = direction_t::DIRECTION_DOWN;
+            last_direction_ = current_direction_;
+            animations_.current_action = ActionSheet::walk_down;
+        }
+        else if (state[SDL_SCANCODE_LEFT]) // move left
+        {
+            current_direction_ = direction_t::DIRECTION_LEFT;
+            last_direction_ = current_direction_;
+            animations_.current_action = ActionSheet::walk_left;
+        }
+        else if (state[SDL_SCANCODE_RIGHT]) // move right
+        {
+            current_direction_ = direction_t::DIRECTION_RIGHT;
+            last_direction_ = current_direction_;
+            animations_.current_action = ActionSheet::walk_right;
+        }
+        else 
+        {
+            current_direction_ = direction_t::DIRECTION_NONE;
+        }
 
-void Player::update_flip_state()
-{
-    // switch (current_direction_)
-    // {
-    // case direction_t::DIRECTION_LEFT:
-    //     flip_state_ = SDL_FLIP_HORIZONTAL;
-    //     break;
-    // case direction_t::DIRECTION_RIGHT:
-    //     flip_state_ = SDL_FLIP_NONE;
-    //     break;
-    //}
+    }
 
-    flip_state_ = SDL_FLIP_NONE;
+    if (!is_attacking_)
+    {
+        if (state[SDL_SCANCODE_Z]) // light attack
+        {
+            current_attack_ = Attacks::LIGHT;
+            choose_direction_light_attack();
+            is_attacking_ = true;
+            printf("light\n");
+        }
+        else if (state[SDL_SCANCODE_X]) // heavy attack
+        {
+            current_attack_ = Attacks::HEAVY;
+            choose_direction_heavy_attack();
+            is_attacking_ = true;
+            printf("heavy\n");
+        }
+    }
 }
 
 // move player sprite on the plane based on speed delta time and direction
@@ -134,26 +180,28 @@ void Player::move(const SDL_Event &e, const float delta_time, const bool camera_
 {
     handle_controls();
 
-    if (is_attacking_)
-    {
-        return;
-    }
-
-    speed_ = MovementFunctions::calculate_velocity(delta_time, PlayerConstants::WALKING_SPEED);
-
-    update_flip_state();
-
-    MovementFunctions::move_object(speed_, position_.x, position_.y, scale_, current_direction_, size_.width, size_.height, map_width, map_heigth);
-
-    if (current_direction_ != direction_t::DIRECTION_NONE)
+    if (current_direction_ != direction_t::DIRECTION_NONE || is_attacking_)
     {
         update_sprite_animation(delta_time);
     }
     else
     {
-        // animations_.current_frame = 0;
-        // animations_.timer = 0;
+        animations_.current_frame = 0;
     }
+
+    if (is_attacking_)
+    {
+        if (animations_.timer <= 0.0f && animations_.current_frame == 0)
+        {
+            is_attacking_ = false;
+        }
+
+        return;
+    }
+
+    speed_ = MovementFunctions::calculate_velocity(delta_time, PlayerConstants::WALKING_SPEED);
+
+    MovementFunctions::move_object(speed_, position_.x, position_.y, scale_, current_direction_, size_.width, size_.height, map_width, map_heigth);
 }
 
 void Player::take_damage(const int val)

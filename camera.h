@@ -4,7 +4,7 @@
 
 namespace CameraConstants 
 {
-    inline float BACKGROUND_SIZE_RATIO = (utility::SCREEN_WIDTH / 2816.0f); // background size ratio compared to screen size |   SCREEN_WIDTH / BACKGROUND_WIDTH
+    inline float BACKGROUND_SIZE_RATIO = (utility::SCREEN_WIDTH / 2160.0f); // background size ratio compared to screen size |   SCREEN_WIDTH / BACKGROUND_WIDTH
 }
 
 // camera is going to be moving everything in the game world based on player position e.g background positionand other entities
