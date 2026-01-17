@@ -100,8 +100,8 @@ namespace Attacks
     };
 
     // name | damage | cooldown [sec]
-    constexpr attack_t LIGHT{"Light Attack", 5, 8.0f};
-    constexpr attack_t HEAVY{"Heavy Attack", 15, 30.0f};
+    constexpr attack_t LIGHT{"Light Attack", 5, 1.0f};
+    constexpr attack_t HEAVY{"Heavy Attack", 15, 2.0f};
 };
 
 enum class ActionSheet

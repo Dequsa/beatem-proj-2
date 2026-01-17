@@ -13,6 +13,7 @@ private:
     float time_;
     char *text_;
     float scale_;
+    int player_health_;
     dimensions_t size_;
     position_t pos_;
     SDL_Surface *charset_;
@@ -22,6 +23,9 @@ private:
 
     // time update for time displaying
     void update_timer(float dt);
+
+    // health update
+    void update_player_health(const int player_health);
 
 public:
     InfoBar(position_t pos, dimensions_t size, SDL_Renderer *renderer);

@@ -3,6 +3,7 @@ SDL2-2.0.10/
 lib/
 x64/
 .libraries/
+.vscode/
 
 # Build files
 *.exe
