@@ -14,3 +14,8 @@ bool screen_init_SDL();
 void close(screen_t *screen);
 
 void screen_create(screen_t *screen);
+
+namespace MainMenu
+{
+    void show(SDL_Event *e);
+}

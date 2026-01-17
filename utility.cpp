@@ -159,6 +159,10 @@ namespace InGameManagers
 {
 	SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path)
 	{
+
+		// , int *w, int *h
+
+		
 		SDL_Surface *temp_surface = SDL_LoadBMP(path);
 		SDL_Texture *new_texture = nullptr;
 
@@ -175,10 +179,19 @@ namespace InGameManagers
 			// create texture from surface
 			new_texture = SDL_CreateTextureFromSurface(screen, temp_surface);
 		}
+
 		if (new_texture == nullptr)
 		{
 			printf("err while loading sprite sheet : %s \n", SDL_GetError());
 		}
+
+		// if (SDL_QueryTexture(new_texture, NULL, NULL, w, h))
+		// {
+		// 	printf("Err while querrying texture %s\n", SDL_GetError());
+		// }
+
+		// printf("PATH: %s | W: %d | H:%d\n", path, w ,h);
+
 		SDL_FreeSurface(temp_surface);
 		return new_texture;
 	}
@@ -186,17 +199,17 @@ namespace InGameManagers
 
 namespace UtilityFunctions
 {
-    int GetStringLength(const char *string)
-    {
-        char c = 'A';
-        int n = 0;
+	int GetStringLength(const char *string)
+	{
+		char c = 'A';
+		int n = 0;
 
-        while (c != '\0')
-        {
-            c = string[n];
-            ++n;
-        }
+		while (c != '\0')
+		{
+			c = string[n];
+			++n;
+		}
 
-        return n - 1;
-    }
+		return n - 1;
+	}
 }

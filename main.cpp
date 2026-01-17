@@ -26,6 +26,39 @@ void handle_event(SDL_Event *e, bool *quit, Player &player)
 	}
 }
 
+void calculate_delta_time(float &delta_time, Uint64 &last_time, const Uint64 PC_FREQ, int desired_frame_time)
+{
+	Uint64 current_time = SDL_GetPerformanceCounter();
+	delta_time = static_cast<float>(current_time - last_time) / PC_FREQ; // precise seconds | how many times CPU has ticks/s
+
+	float cap = desired_frame_time / 1000.0f;
+
+	last_time = current_time;
+
+	// delay frames if they are faster then expected
+	if (delta_time < cap)
+	{
+		SDL_Delay(static_cast<Uint64>((cap - delta_time) * 1000.0f)); // cap at monitor refresh rate (set in config) kinda like V-SYNC
+
+		current_time = SDL_GetPerformanceCounter();
+		delta_time = static_cast<float>(current_time - last_time) / PC_FREQ;
+	}
+
+	last_time = current_time;
+
+	// dont let delta time be larger then 10fps
+	if (delta_time > 0.1f)
+	{
+		delta_time = 0.1f;
+	}
+
+	// debug
+	if (utility::DEBUG_MODE)
+	{
+		printf("Delta time: %f seconds\n", delta_time);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	screen_t screen{};
@@ -44,30 +77,14 @@ int main(int argc, char *argv[])
 	bool quit = false;
 
 	Uint64 last_time = SDL_GetPerformanceCounter();
-	int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
 	const Uint64 PC_FREQ = SDL_GetPerformanceFrequency();
+	int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
+	float delta_time = 0.0f;
+
 	while (!quit)
 	{
 
-		Uint64 current_time = SDL_GetPerformanceCounter();
-		float delta_time = static_cast<float>(current_time - last_time) / PC_FREQ; // precise seconds | how many times CPU has ticks/s
-
-		last_time = current_time;
-
-		// dont let delta time be larger then 10fps
-		if (delta_time > 0.1f)
-			delta_time = 0.1f;
-		// delay frames if the are faster then expected
-		if (delta_time * 1000.0f < desired_frame_time)
-		{
-			SDL_Delay(static_cast<Uint64>(desired_frame_time - delta_time * 1000.0f)); // cap at monitor refresh rate (set in config) kind of V-SYNC
-		}
-
-		// debug
-		if (utility::DEBUG_MODE)
-		{
-			printf("Delta time: %f seconds\n", delta_time);
-		}
+		calculate_delta_time(delta_time, last_time, PC_FREQ, desired_frame_time);
 
 		SDL_RenderClear(screen.game_renderer);
 
@@ -95,12 +112,6 @@ int main(int argc, char *argv[])
 									player.get_animation().frame_height, player.get_animation().frame_width,
 									player.get_animation().current_frame, player.get_current_action(), 0.0f);
 
-		// // draw enemy sprite
-		// DrawingFunctions::DrawFrame(screen.game_renderer, enemy.get_sprite_sheet(), enemy.get_position().x, enemy.get_position().y, 0.67f, enemy.GetFlipState(), camera.get_position().x,
-		// 							 camera.get_position().y, enemy.get_animation().sheet_height, enemy.get_animation().sheet_width, enemy.get_animation().current_frame, 0, 5.0f);
-
-		// DrawingFunctions::draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.2f, player.get_flip_state(), camera.get_position().x, camera.get_position().y);
-
 		// draw infobar
 		infobar.update_infobar(player.get_health(), 0.0f, delta_time, screen.game_renderer);
 
@@ -109,7 +120,5 @@ int main(int argc, char *argv[])
 
 	// free-up everything
 	close(&screen);
-	player.~Player();
-
 	return 0;
 }

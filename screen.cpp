@@ -77,3 +77,32 @@ void screen_create(screen_t *screen)
         }
     }
 }
+
+namespace MainMenu
+{
+    SDL_Texture *load_background()
+    {
+
+    }
+
+    SDL_Texture *load_sprite()
+    {
+        
+    }
+
+    void show(SDL_Event *e)
+    {
+        bool is_in_menu = (e->type != SDLK_KP_ENTER); // until player clicks ENTER
+
+        SDL_Texture *background = load_background();
+        SDL_Texture *sprite = load_sprite();
+
+        while (is_in_menu)
+        {
+            // background
+
+            // sprite with click enter to continue
+        }
+
+    }
+}

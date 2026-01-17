@@ -97,6 +97,10 @@ void Player::choose_direction_light_attack()
         animations_.current_action = ActionSheet::slash_right;
         break;
     }
+
+    // reset animation so it doesnt snap or play only half
+    animations_.current_frame = 0;
+    animations_.timer = 0.0f;
 }
 
 void Player::choose_direction_heavy_attack()
@@ -116,6 +120,10 @@ void Player::choose_direction_heavy_attack()
         animations_.current_action = ActionSheet::slash_right;
         break;
     }
+
+    // reset animation so it doesnt snap or play only half
+    animations_.current_frame = 0;
+    animations_.timer = 0.0f;
 }
 
 void Player::set_light_attack()
@@ -143,7 +151,7 @@ void Player::count_attack_cooldown(float dt)
     if (current_attack_.cooldown >= 0)
     {
         current_attack_.cooldown -= dt;
-        printf("%f\n", current_attack_.cooldown);
+        // printf("%f\n", current_attack_.cooldown);
     }
 }
 
@@ -151,6 +159,18 @@ void Player::handle_controls()
 {
     // get what key is pressed wihtout this lag when holding down key
     const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+    if (!is_attacking_ && current_attack_.cooldown <= 0)
+    {
+        if (state[SDL_SCANCODE_Z]) // light attack
+        {
+            set_light_attack();
+        }
+        else if (state[SDL_SCANCODE_X]) // heavy attack
+        {
+            set_heavy_attack();
+        }
+    }
 
     if (!is_attacking_)
     {
@@ -181,18 +201,6 @@ void Player::handle_controls()
         else
         {
             current_direction_ = direction_t::DIRECTION_NONE;
-        }
-    }
-
-    if (!is_attacking_ && current_attack_.cooldown <= 0)
-    {
-        if (state[SDL_SCANCODE_Z]) // light attack
-        {
-            set_light_attack();
-        }
-        else if (state[SDL_SCANCODE_X]) // heavy attack
-        {
-            set_heavy_attack();
         }
     }
 }
