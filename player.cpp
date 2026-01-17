@@ -118,6 +118,35 @@ void Player::choose_direction_heavy_attack()
     }
 }
 
+void Player::set_light_attack()
+{
+    is_attacking_ = true;
+    current_attack_ = Attacks::LIGHT;
+
+    choose_direction_light_attack();
+
+    printf("%s\n", current_attack_.name);
+}
+
+void Player::set_heavy_attack()
+{
+    is_attacking_ = true;
+    current_attack_ = Attacks::HEAVY;
+
+    choose_direction_heavy_attack();
+
+    printf("%s\n", current_attack_.name);
+}
+
+void Player::count_attack_cooldown(float dt)
+{
+    if (current_attack_.cooldown >= 0)
+    {
+        current_attack_.cooldown -= dt;
+        printf("%f\n", current_attack_.cooldown);
+    }
+}
+
 void Player::handle_controls()
 {
     // get what key is pressed wihtout this lag when holding down key
@@ -149,28 +178,21 @@ void Player::handle_controls()
             last_direction_ = current_direction_;
             animations_.current_action = ActionSheet::walk_right;
         }
-        else 
+        else
         {
             current_direction_ = direction_t::DIRECTION_NONE;
         }
-
     }
 
-    if (!is_attacking_)
+    if (!is_attacking_ && current_attack_.cooldown <= 0)
     {
         if (state[SDL_SCANCODE_Z]) // light attack
         {
-            current_attack_ = Attacks::LIGHT;
-            choose_direction_light_attack();
-            is_attacking_ = true;
-            printf("light\n");
+            set_light_attack();
         }
         else if (state[SDL_SCANCODE_X]) // heavy attack
         {
-            current_attack_ = Attacks::HEAVY;
-            choose_direction_heavy_attack();
-            is_attacking_ = true;
-            printf("heavy\n");
+            set_heavy_attack();
         }
     }
 }
@@ -178,6 +200,7 @@ void Player::handle_controls()
 // move player sprite on the plane based on speed delta time and direction
 void Player::move(const SDL_Event &e, const float delta_time, const bool camera_state, const int map_width, const int map_heigth)
 {
+    count_attack_cooldown(delta_time);
     handle_controls();
 
     if (current_direction_ != direction_t::DIRECTION_NONE || is_attacking_)

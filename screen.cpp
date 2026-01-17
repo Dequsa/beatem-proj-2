@@ -60,11 +60,6 @@ bool screen_create_window(screen_t *screen)
 
 void close(screen_t *screen)
 {
-
-    // dealocate surface
-    // SDL_FreeSurface(screen->sprites[0]);
-    // screen->sprites = nullptr;
-
     // destroy the window
     SDL_DestroyWindow(screen->game_window);
     screen->game_window = nullptr;
@@ -78,7 +73,7 @@ void screen_create(screen_t *screen)
     {
         if (screen_create_window(screen))
         {
-            // load_all_sprites_to_memory(screen, player_sprite);
+           return;
         }
     }
 }

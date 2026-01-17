@@ -15,7 +15,7 @@ namespace utility
 
 namespace DrawingFunctions
 {
-    void DrawString(SDL_Surface *screen, int x, int y, const char *text, SDL_Surface *charset);
+    void DrawString(SDL_Surface *screen, int x, int y, const char *text, SDL_Surface *charset, float scale);
 
     void DrawSurface(SDL_Surface *screen, SDL_Surface *sprite, int x, int y);
 

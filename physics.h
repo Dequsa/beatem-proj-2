@@ -3,8 +3,6 @@
 
 namespace MovementFunctions
 {
-    constexpr float floor_top = 1163.0f;
-
     void bound_entity(float &x, float &y, int w, int h, int map_w, int map_h);
 
     void move_object_x(float velocity, float &x, direction_t current_direction);

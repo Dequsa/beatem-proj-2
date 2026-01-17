@@ -5,8 +5,13 @@
 
 namespace MovementFunctions
 {
+    constexpr float MIN_SIZE = 3.5f;
+    constexpr float MAX_SIZE = 5.0f;
+    constexpr float FLOOR_START_Y = 1197.0f;
+    // from bmp
+    constexpr float REAL_FLOOR_SIZE = 1047.0f;
+    
     // bounding system
-
     void bound_entity(float &x, float &y, int w, int h, int map_w, int map_h)
     {
         // bound x
@@ -17,8 +22,8 @@ namespace MovementFunctions
             x = 0.0f;
 
         // bound y
-        if (y < floor_top - h) // floor top
-            y = floor_top - h;
+        if (y < FLOOR_START_Y - h) // floor top
+            y = FLOOR_START_Y - h;
 
         if (y > map_h - h) // bottom of the screen
             y = map_h - h;
@@ -48,38 +53,24 @@ namespace MovementFunctions
 
     void move_object_y(float velocity, float &y, float &scale, direction_t current_direction)
     {
-        float min_size = 3.5f;
-        float max_size = 5.0f;
-        float floor_size = 1147.0f;
 
-        float distance = floor_size * CameraConstants::BACKGROUND_SIZE_RATIO;
-        float scale_step = (max_size - min_size) / distance;
+        float floor_size = REAL_FLOOR_SIZE * CameraConstants::BACKGROUND_SIZE_RATIO;
+        float scale_step = (MAX_SIZE - MIN_SIZE) / floor_size;
+        float scale_progress = y - FLOOR_START_Y; // progress tracking
 
         switch (current_direction)
         {
         case direction_t::DIRECTION_UP:
             y -= velocity;
-           
-            scale -= scale_step;
-            
-            if (scale <= min_size)
-            {
-                scale = min_size;
-            }
             break;
         case direction_t::DIRECTION_DOWN:
             y += velocity;
-           
-            scale += scale_step;
-
-            if (scale >= max_size)
-            {
-                scale = max_size;
-            }
             break;
         default:
             return;
         }
+        // scale change with progress
+        scale = (scale_step * scale_progress) + MIN_SIZE;
     }
 
     void move_object(float velocity, float &x, float &y, float &scale, direction_t current_direction, int w, int h, int map_w, int map_h)
@@ -92,7 +83,7 @@ namespace MovementFunctions
         move_object_x(velocity, x, current_direction);
         move_object_y(velocity, y, scale, current_direction);
         bound_entity(x, y, w, h, map_w, map_h);
-        
+
         if (utility::DEBUG_MODE)
         {
             printf("X: %f | Y:%f\n", x, y);

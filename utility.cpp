@@ -7,15 +7,14 @@
 
 namespace DrawingFunctions
 {
-	void DrawString(SDL_Surface *screen, int x, int y, const char *text,
-					SDL_Surface *charset)
+	void DrawString(SDL_Surface *screen, int x, int y, const char *text, SDL_Surface *charset, float scale)
 	{
 		int px, py, c;
 		SDL_Rect s, d;
 		s.w = 8;
 		s.h = 8;
-		d.w = 8;
-		d.h = 8;
+		d.w = static_cast<int>(8 * scale);
+		d.h = static_cast<int>(8 * scale);
 		while (*text)
 		{
 			c = *text & 255;
@@ -25,8 +24,8 @@ namespace DrawingFunctions
 			s.y = py;
 			d.x = x;
 			d.y = y;
-			SDL_BlitSurface(charset, &s, screen, &d);
-			x += 8;
+			SDL_BlitScaled(charset, &s, screen, &d);
+			x += static_cast<int>(8 * scale);
 			text++;
 		};
 	};

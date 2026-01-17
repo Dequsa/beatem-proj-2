@@ -6,7 +6,7 @@
 namespace PlayerConstants
 {
     constexpr const char* DEFAULT_NAME = "Brawler";
-    constexpr float WALKING_SPEED = 0.50f;
+    constexpr float WALKING_SPEED = 0.20f;
     constexpr float RUNNING_SPEED = 3.0f;
     constexpr int NAME_MAX_LENGTH = 128;
     constexpr const char* SPRITE_PATH = "assets/sprites/player/character-spritesheet.bmp";
@@ -40,6 +40,12 @@ private:
     void choose_direction_light_attack();
     void choose_direction_heavy_attack();
 
+    // set attack
+    void set_light_attack();
+    void set_heavy_attack();
+
+    void count_attack_cooldown(float dt);
+
 public:
     // player class constructor
     Player(SDL_Renderer *screen);
@@ -58,6 +64,7 @@ public:
     void take_damage(const int val);
     
     // getters:
+    int get_health() { return health_; }
     SDL_Texture* get_sprite_sheet() { return animations_.sprite_sheet; }
     position_t get_position() { return position_; }
     direction_t get_direction() { return current_direction_; }

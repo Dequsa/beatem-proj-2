@@ -3,40 +3,66 @@
 #include "string.h"
 #include <cstdio>
 
-InfoBar::InfoBar(position_t position, dimensions_t size) : pos_(position), size_(size)
+InfoBar::InfoBar(position_t position, dimensions_t size, SDL_Renderer *renderer) : pos_(position), size_(size), scale_(2.0f)
 {
     int max_lenght_string = strlen(InfoBarConstants::CONTROLS);
-    text_ = new char[max_lenght_string];
-    sprintf(text_, InfoBarConstants::CONTROLS);
-    // load charset into mem
+    text_ = new char[max_lenght_string + 1];
+    strcpy(text_, InfoBarConstants::CONTROLS);
+
     charset_ = SDL_LoadBMP(InfoBarConstants::CHARSET_PATH);
-    if (charset_ = nullptr)
+    surface_ = SDL_CreateRGBSurface(0, utility::SCREEN_WIDTH, utility::SCREEN_HEIGHT, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    texture_ = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, utility::SCREEN_WIDTH, utility::SCREEN_HEIGHT);
+    SDL_SetTextureBlendMode(texture_, SDL_BLENDMODE_BLEND); // allow texture to be transparent where no pixel are used
+
+    if (charset_ == nullptr)
     {
         printf("Err while loading charset bitmap: %s\n", SDL_GetError());
     }
-    SDL_SetColorKey(charset_, true, 0x000000);
+
+    if (surface_ == nullptr)
+    {
+        printf("Err surface null info-bar: %s\n", SDL_GetError());
+    }
+
+    if (texture_ == nullptr)
+    {
+        printf("Err texture null info-bar: %s\n", SDL_GetError());
+    }
+
+    // set white key only if the charset has loaded
+    if (charset_)
+    {
+        SDL_SetColorKey(charset_, true, 0x000000);
+    }
 }
 
 InfoBar::~InfoBar()
 {
-    // for now nothing
+    delete[] text_;
 }
 
-float InfoBar::update_timer(float dt)
+void InfoBar::update_timer(float dt)
 {
     time_ += dt;
 }
 
-void InfoBar::display_timer(SDL_Renderer *renderer)
+void InfoBar::display_infobar(SDL_Renderer *renderer)
 {
-    // DrawingFunctions::DrawString(surface_, size_.width / 2 - strlen(text_) * 8 / 2, pos_.y, text_, charset_);
-    // SDL_UpdateTexture(texture_, NULL, surface_->pixels, surface_->pitch);
-    // SDL_RenderCopy(renderer, texture_, NULL, NULL);
+    SDL_FillRect(surface_, NULL, 0x00000000);
+    DrawingFunctions::DrawString(surface_, size_.width / 2 - strlen(text_) * 8 / 2 * scale_, 30, text_, charset_, scale_);
+
+    if (SDL_UpdateTexture(texture_, NULL, surface_->pixels, surface_->pitch))
+    {
+        printf("Err updating texture infobar: %s\n", SDL_GetError());
+    }
+
+    if (SDL_RenderCopy(renderer, texture_, NULL, NULL))
+    {
+        printf("Err fail to copy to render: %s\n", SDL_GetError());
+    }
 }
 
-void InfoBar::update_infobar(const float player_health, const float enemy_health, float delta_time, SDL_Renderer *renderer)
+void InfoBar::update_infobar(const int player_health, const int enemy_health, float delta_time, SDL_Renderer *renderer)
 {
-    // sprintf(text_, InfoBarConstants::CONTROLS);
-    // update_timer(delta_time);
-    // display_timer(renderer);
+    display_infobar(renderer);
 }

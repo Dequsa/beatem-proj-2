@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	screen_create(&screen);
 
 	// initialization of classes
-	InfoBar infobar({0.0f, 0.0f}, {utility::SCREEN_WIDTH, 26});
+	InfoBar infobar({0.0f, 0.0f}, {utility::SCREEN_WIDTH, 26}, screen.game_renderer);
 	Camera camera(0.0f, -950.0f, 1.3f, PlayerConstants::WALKING_SPEED);
 	Map game_map(screen.game_renderer, utility::MAP_PATH);
 	Player player(screen.game_renderer);
@@ -86,9 +86,6 @@ int main(int argc, char *argv[])
 		// entity movement
 		enemy.update(player, delta_time);
 
-		// draw infobar
-		infobar.update_infobar(0.0f, 0.0f, delta_time, screen.game_renderer);
-
 		// draw background
 		DrawingFunctions::DrawBackground(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, CameraConstants::BACKGROUND_SIZE_RATIO);
 
@@ -103,6 +100,9 @@ int main(int argc, char *argv[])
 		// 							 camera.get_position().y, enemy.get_animation().sheet_height, enemy.get_animation().sheet_width, enemy.get_animation().current_frame, 0, 5.0f);
 
 		// DrawingFunctions::draw_sprite(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, 0.2f, player.get_flip_state(), camera.get_position().x, camera.get_position().y);
+
+		// draw infobar
+		infobar.update_infobar(player.get_health(), 0.0f, delta_time, screen.game_renderer);
 
 		SDL_RenderPresent(screen.game_renderer);
 	}
