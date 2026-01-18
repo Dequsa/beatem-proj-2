@@ -12,6 +12,8 @@ namespace MovementFunctions
     void move_object(float velocity, float &x, float &y, float &scale, direction_t current_direction, int w, int h, int map_w, int map_h);
 
     float calculate_velocity(float dt, float base_vel);
+
+    void dash(direction_t last_direction, position_t &pos, dimensions_t size, int map_width, int map_height, float &scale, float strength);
 }
 
 namespace AttackFunctions

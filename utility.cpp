@@ -130,28 +130,28 @@ namespace DrawingFunctions
 		SDL_RenderCopyEx(screen, background, &camera_rect, NULL, 0, NULL, SDL_FLIP_NONE);
 	};
 
-	void DrawFrame(SDL_Renderer *screen, SDL_Texture *sprite, const float x, const float y, float scale, SDL_RendererFlip flip, int camera_x, int camera_y, float h, float w, int current_frame, ActionSheet current_action, float offset)
+	void DrawFrame(SDL_Renderer *screen, const position_t pos, const float scale, const SDL_RendererFlip flip, const position_t camera, animation_t animation, const float offset)
 	{
 		SDL_Rect dest;
-		dest.x = static_cast<int>(x - camera_x);
-		dest.y = static_cast<int>(y - camera_y);
-		dest.w = w * scale; // hight of the sprite sheet scaled
-		dest.h = h * scale;
+		dest.x = static_cast<int>(pos.x - camera.x);
+		dest.y = static_cast<int>(pos.y - camera.y - pos.z);
+		dest.w = animation.size.width * scale; // hight of the sprite sheet scaled
+		dest.h = animation.size.height * scale;
 
 		SDL_Rect src;
 
 		// what part of the sprite sheet to render
-		src.x = current_frame * (int)w + offset;
-		src.y = static_cast<int>(current_action) * static_cast<int>(h);
+		src.x = animation.current_frame * static_cast<int>(animation.size.width + offset);
+		src.y = static_cast<int>(animation.current_action) * static_cast<int>(animation.size.height);
 
 		// how big the cutout should the rectangle be
-		src.w = (int)w;
-		src.h = (int)h;
+		src.w = static_cast<int>(animation.size.width);
+		src.h = static_cast<int>(animation.size.height);
 
 		if (utility::DEBUG_MODE)
-			printf("Frame: %d | SrcRect X: %d | Width: %d\n", current_frame, src.x, src.w);
+			printf("Frame: %d | SrcRect X: %d | Width: %d\n", animation.current_frame, src.x, src.w);
 
-		SDL_RenderCopyEx(screen, sprite, &src, &dest, 0, NULL, flip);
+		SDL_RenderCopyEx(screen, animation.sprite_sheet, &src, &dest, 0, NULL, flip);
 	};
 }
 
@@ -194,7 +194,11 @@ namespace InGameManagers
 			*width = w;
 			*height = h;
 		}
-		printf("PATH: %s | W: %d | H:%d\n", path, w, h);
+
+		if(utility::DEBUG_MODE)
+		{
+			printf("PATH: %s | W: %d | H:%d\n", path, w, h);
+		}
 
 		SDL_FreeSurface(temp_surface);
 		return new_texture;

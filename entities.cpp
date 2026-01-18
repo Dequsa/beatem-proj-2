@@ -16,7 +16,7 @@ Entity::Entity(int id, float x, float y, type_t type) : type_(type), id_(id)
 Enemy::Enemy(int id, float x, float y, SDL_Renderer *screen) : Entity(id, x, y, type_t::ENTITY_ENEMY),
                                                                health_(EnemyConstants::MAX_HEALTH),
                                                                is_attacking_(false),
-                                                               is_alive_(false),
+                                                               is_alive_(true),
                                                                attack_cd_(1.0f),
                                                                flip_(SDL_FLIP_NONE)
 {
@@ -34,21 +34,23 @@ Enemy::Enemy(int id, float x, float y, SDL_Renderer *screen) : Entity(id, x, y, 
     size_.height = EnemyConstants::SPRITE_HEIGHT * 0.67f;
     size_.width = EnemyConstants::SPRITE_WIDTH * 0.67f;
 
-    printf("Enemy id: %d h:%d w: %d", id_, h, w);
+    if (utility::DEBUG_MODE)
+    {
+        printf("Enemy id: %d h:%d w: %d", id_, h, w);
+    }
 
     // animation initialization
     anim_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
     anim_.total_frames = new int[1]{};
     anim_.current_frame = 0;
-    anim_.frame_height = h;
-    anim_.frame_width = w * 0.2f; //(float)(1 / anim_.total_frames); // same as players
+    anim_.size.height = h;
+    anim_.size.width = w * 0.2f; //(float)(1 / anim_.total_frames); // same as players
 }
 
 Enemy::~Enemy()
 {
     delete[] anim_.total_frames;
     anim_.total_frames = nullptr;
-    
 }
 
 void Enemy::update_animation_sprite()
@@ -72,7 +74,7 @@ void Enemy::move()
 void Enemy::choose_attack()
 {
     srand(time(nullptr));
-    int random_attack = rand() % static_cast<int>(Attacks::Number::Count);
+    int random_attack = rand() % static_cast<int>(Attacks::Number::HEAVY);
 
     switch (random_attack)
     {
@@ -104,6 +106,11 @@ void Enemy::attack_player(Player &p, const float dt)
 
 void Enemy::update(Player &p, const float dt)
 {
+    if (!is_alive_)
+    {
+        return;
+    }
+
     // move();
     attack_player(p, dt);
     move();
@@ -113,8 +120,24 @@ void Enemy::update(Player &p, const float dt)
         printf("Cooldown: %f\n", attack_cd_);
     }
 
+
     if (attack_cd_ > 0)
         attack_cd_ -= dt;
 }
 
-// if distance between player and enemy is less or equal to screen width then enemy target player else not
+void Enemy::recive_damage(int val)
+{
+
+    if (utility::DEBUG_MODE)
+    {
+        printf("Enemy Health: %d\n", health_);
+    }
+
+    health_ -= val;
+    
+    if (health_ <= 0)
+    {
+        is_alive_ = false;
+        return;
+    }
+}

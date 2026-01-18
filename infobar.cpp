@@ -49,7 +49,6 @@ void InfoBar::update_timer(float dt)
 
 void InfoBar::update_player_health(const int player_health)
 {
-    player_health_ = player_health;
     sprintf(text_, InfoBarConstants::TITLE_HEALTH, player_health);
 }
 
@@ -66,7 +65,18 @@ void InfoBar::display_infobar(SDL_Renderer *renderer)
     }
 }
 
-void InfoBar::update_infobar(const int player_health, const int enemy_health, float delta_time, SDL_Renderer *renderer)
+void InfoBar::update_enemy_health(const int boss_health)
+{
+    int boss = boss_health;
+
+    if (boss <= 0)
+    {
+        boss = 0;
+    }
+    sprintf(text_, InfoBarConstants::ENEMY_TITLE, boss);
+}
+
+void InfoBar::update_infobar(const int player_health, const int boss_health, float delta_time, SDL_Renderer *renderer)
 {
     SDL_FillRect(surface_, NULL, 0x00000000);
 
@@ -74,6 +84,9 @@ void InfoBar::update_infobar(const int player_health, const int enemy_health, fl
     DrawingFunctions::DrawString(surface_, size_.width / 2 - strlen(text_) * 8 / 2 * scale_, 30, text_, charset_, scale_);
 
     update_timer(delta_time);
+    DrawingFunctions::DrawString(surface_, size_.width / 2 - strlen(text_) * 8 / 2 * scale_, 70, text_, charset_, scale_);
+
+    update_enemy_health(boss_health);
     DrawingFunctions::DrawString(surface_, size_.width / 2 - strlen(text_) * 8 / 2 * scale_, 50, text_, charset_, scale_);
 
     display_infobar(renderer);

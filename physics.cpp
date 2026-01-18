@@ -94,6 +94,29 @@ namespace MovementFunctions
             printf("X: %f | Y:%f\n", x, y);
         }
     }
+
+    void dash(direction_t last_direction, position_t &pos, dimensions_t size,  int map_width, int map_height, float &scale, float strength)
+    {
+        scale_object(pos.y, scale);
+
+        switch (last_direction)
+        {
+            case direction_t::DIRECTION_UP:
+            pos.y -= strength;
+            break;
+            case direction_t::DIRECTION_DOWN:
+            pos.y += strength;
+            break;
+            case direction_t::DIRECTION_LEFT:
+            pos.x -= strength;
+            break;
+            case direction_t::DIRECTION_RIGHT:
+            pos.x += strength;
+            break; 
+}
+
+        bound_entity(pos.x, pos.y, size.width, size.height, map_width, map_height);
+    }
 }
 
 namespace AttackFunctions

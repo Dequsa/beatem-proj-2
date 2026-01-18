@@ -3,6 +3,9 @@
 #include "structs.h"
 #include "physics.h"
 
+class Enemy;
+
+
 namespace PlayerConstants
 {
     constexpr const char* DEFAULT_NAME = "Brawler";
@@ -33,9 +36,18 @@ private:
     dimensions_t size_;
     float scale_;
     bool is_attacking_;
+    bool is_dashing_;
+    float dash_strength;
+    bool has_attacked_;
+
+    //utility checks
+    bool has_animation_ended();
 
     // handle player controls / key-state
     void handle_controls();
+
+    // which way to dash
+    void choose_dash_direction();
 
     // which way to attack
     void choose_direction_light_attack();
@@ -58,7 +70,7 @@ public:
     void update_sprite_animation(const float delta_time);
 
     // move player sprite based on position
-    void move(const SDL_Event &e, const float delta_time, const bool camera_state, const int map_width, const int map_heigth);
+    void move(const SDL_Event &e, const float delta_time, const bool camera_state, const int map_width, const int map_heigth, Enemy &enemy);
 
     // setters:
     

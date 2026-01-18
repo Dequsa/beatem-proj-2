@@ -1,5 +1,82 @@
 #pragma once
-#include "utility.h"
+#include <SDL.h>
+
+enum class ActionSheet
+{
+    spell_cast_up = 0,
+    spell_cast_left,
+    spell_cast_down,
+    spell_cast_right,
+
+    thrust_up,
+    thrust_left,
+    thrust_down,
+    thrust_right,
+
+    walk_up,
+    walk_left,
+    walk_down,
+    walk_right,
+
+    slash_up,
+    slash_left,
+    slash_down,
+    slash_right,
+
+    shoot_up,
+    shoot_left,
+    shoot_down,
+    shoot_right,
+
+    hurt_up,
+
+    climb_up,
+
+    idle_up,
+    idle_left,
+    idle_down,
+    idle_right,
+
+    jump_up,
+    jump_left,
+    jump_down,
+    jump_right,
+
+    sit_up,
+    sit_left,
+    sit_down,
+    sit_right,
+
+    emote_up,
+    emote_left,
+    emote_down,
+    emote_right,
+
+    run_up,
+    run_left,
+    run_down,
+    run_right,
+
+    watering_up,
+    watering_left,
+    watering_down,
+    watering_right,
+
+    combat_idle_up,
+    combat_idle_left,
+    combat_idle_down,
+    combat_idle_right,
+
+    one_handed_slash_up,
+    one_handed_slash_left,
+    one_handed_slash_down,
+    one_handed_slash_right,
+
+    one_handed_backslash_up,
+    one_handed_backslash_left,
+    one_handed_backslash_down,
+    one_handed_backslash_right,
+};
 
 enum class type_t
 {
@@ -48,8 +125,9 @@ typedef struct
 typedef struct
 {
     SDL_Texture *sprite_sheet;
-    int frame_width;  // it should be frame instead of sheet
-    int frame_height; // it should be frame instead of sheet
+    dimensions_t size;
+    // int frame_width;  // it should be frame instead of sheet
+    // int frame_height; // it should be frame instead of sheet
     int *total_frames;
     int current_frame;
     ActionSheet current_action;
@@ -89,100 +167,17 @@ typedef struct
 
 namespace Attacks
 {
-    constexpr int ATTACKS_COUNT = 1;
-
     enum class Number
     {
         LIGHT = 0,
         HEAVY,
+        DASH,
 
         Count // gives count of all items
     };
 
     // name | damage | cooldown [sec]
-    constexpr attack_t LIGHT{"Light Attack", 5, 1.0f};
-    constexpr attack_t HEAVY{"Heavy Attack", 15, 2.0f};
-};
-
-enum class ActionSheet
-{
-    spell_cast_up = 0,
-    spell_cast_left,
-    spell_cast_down,
-    spell_cast_right,
-
-    thrust_up,
-    thrust_left,
-    thrust_down,
-    thrust_right,
-
-    walk_up,
-    walk_left,
-    walk_down,
-    walk_right,
-
-    slash_up,
-    slash_left,
-    slash_down,
-    slash_right,
-
-    shoot_up,
-    shoot_left,
-    shoot_down,
-    shoot_right,
-
-    hurt_up,
-    hurt_left,
-    hurt_down,
-    hurt_right,
-
-    climb_up,
-    climb_left,
-    climb_down,
-    climb_right,
-
-    idle_up,
-    idle_left,
-    idle_down,
-    idle_right,
-
-    jump_up,
-    jump_left,
-    jump_down,
-    jump_right,
-
-    sit_up,
-    sit_left,
-    sit_down,
-    sit_right,
-
-    emote_up,
-    emote_left,
-    emote_down,
-    emote_right,
-
-    run_up,
-    run_left,
-    run_down,
-    run_right,
-
-    watering_up,
-    watering_left,
-    watering_down,
-    watering_right,
-
-    combat_idle_up,
-    combat_idle_left,
-    combat_idle_down,
-    combat_idle_right,
-
-    one_handed_slash_up,
-    one_handed_slash_left,
-    one_handed_slash_down,
-    one_handed_slash_right,
-
-    one_handed_backslash_up,
-    one_handed_backslash_left,
-    one_handed_backslash_down,
-    one_handed_backslash_right,
+    constexpr attack_t LIGHT{"Light Attack", 5, 0.5f};
+    constexpr attack_t HEAVY{"Heavy Attack", 15, 0.7f};
+    constexpr attack_t DASH{"Dash Attack", 20, 1.0f};
 };

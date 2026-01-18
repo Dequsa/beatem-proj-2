@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 {
 	screen_t screen{};
 	bool quit = false;
-	
+	bool has_won = false;
 
 	while (!quit)
 	{
@@ -97,7 +97,9 @@ int main(int argc, char *argv[])
 
 		bool in_action = true;
 
-		//MainMenu::show(screen.game_renderer, in_action);
+		MainMenu menu(screen.game_renderer, in_action);
+
+		menu.show(screen.game_renderer, in_action, quit, has_won);
 
 		while (in_action)
 		{
@@ -113,7 +115,7 @@ int main(int argc, char *argv[])
 			}
 
 			// player movement
-			player.move(e, delta_time, camera.get_state(), game_map.get_width(), game_map.get_height());
+			player.move(e, delta_time, camera.get_state(), game_map.get_width(), game_map.get_height(), enemy);
 
 			// camera movement
 			camera.update(player.get_position(), game_map.get_width(), game_map.get_height());
@@ -124,17 +126,26 @@ int main(int argc, char *argv[])
 			// draw background
 			DrawingFunctions::DrawBackground(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, CameraConstants::BACKGROUND_SIZE_RATIO);
 
+			// draw enemy sprite
+			if (enemy.get_status())
+			{
+				DrawingFunctions::DrawSprite(screen.game_renderer, enemy.get_animation().sprite_sheet, enemy.get_position().x, enemy.get_position().y, 0.2f, SDL_FLIP_NONE, camera.get_position().x, camera.get_position().y);
+			}
+			else if (!has_won && !enemy.get_status())
+			{
+				has_won = true;
+				break;
+			}
+
 			// draw player sprite
-			DrawingFunctions::DrawFrame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, player.get_scale(), player.get_flip_state(),
-										camera.get_position().x, camera.get_position().y,
-										player.get_animation().frame_height, player.get_animation().frame_width,
-										player.get_animation().current_frame, player.get_current_action(), 0.0f);
+			DrawingFunctions::DrawFrame(screen.game_renderer, player.get_position(), player.get_scale(), SDL_FLIP_NONE, camera.get_position(), player.get_animation(), 0.0f);
 
 			// draw infobar
-			infobar.update_infobar(player.get_health(), 0.0f, delta_time, screen.game_renderer);
+			infobar.update_infobar(player.get_health(), enemy.get_health(), delta_time, screen.game_renderer);
 
 			SDL_RenderPresent(screen.game_renderer);
 		}
+		close(&screen);
 	}
 
 	// free-up everything

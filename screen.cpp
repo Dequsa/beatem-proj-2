@@ -77,25 +77,122 @@ void screen_create(screen_t *screen)
     }
 }
 
-namespace MainMenu
+// namespace MainMenu
+//  {
+//      void update_background()
+//      {
+//          DrawingFunctions::DrawSprite()
+//      }
+
+//     void check_input()
+//     {
+//     }
+
+//     void show(SDL_Renderer *screen, bool &in_action, bool &quit)
+//     {
+//         in_action = false;
+
+// while (is_in_menu)
+// {
+//     SDL_Event menu_event;
+//     while (SDL_PollEvent(&menu_event) != 0)
+//     {
+//         if (menu_event.type == SDL_QUIT)
+//         {
+//             quit = true;
+//             is_in_menu = false;
+//             return;
+//         }
+//     }
+
+//     const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+//     if (keystate[SDL_SCANCODE_KP_ENTER] || keystate[SDL_SCANCODE_RETURN])
+//     {
+//         is_in_menu = false;
+//         in_action = true;
+//         return;
+//     }
+//     else if (keystate[SDL_SCANCODE_ESCAPE])
+//     {
+//         quit = true;
+//         is_in_menu = false;
+//         return;
+//     }
+
+//     printf("is in menu\n");
+//     SDL_Delay(16);
+// }
+//     }
+// }
+
+MainMenu::MainMenu(SDL_Renderer *screen, bool &in_action) : is_in_menu_(true)
 {
-    constexpr const char *FILE_PATH = "assets/sprites/objects/sprite_entity_0.bmp";
-    void show(SDL_Renderer *screen, bool &in_action)
+    background_ = InGameManagers::LoadSpriteSheet(screen, FILE_PATH, nullptr, nullptr);
+    win_bg_ = InGameManagers::LoadSpriteSheet(screen, WIN_PATH, nullptr, nullptr);
+    in_action = false;
+}
+
+MainMenu::~MainMenu()
+{
+    FILE_PATH = nullptr;
+    is_in_menu_ = false;
+    background_ = nullptr;
+    sprite_ = nullptr;
+}
+
+void MainMenu::handle_events(bool &in_action, bool &quit)
+{
+    while (is_in_menu_)
     {
-        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-        in_action = false;
-        bool is_in_menu = true; // until player clicks ENTER
-
-        SDL_Texture *background;
-        SDL_Texture *sprite = InGameManagers::LoadSpriteSheet(screen, FILE_PATH, nullptr, nullptr);
-
-        while (is_in_menu)
+        SDL_Event menu_event;
+        while (SDL_PollEvent(&menu_event) != 0)
         {
-            if (keystate[SDL_SCANCODE_KP_ENTER])
+            if (menu_event.type == SDL_QUIT)
             {
-                is_in_menu = false;
-                SDL_Delay(1000);
+                quit = true;
+                is_in_menu_ = false;
+                return;
             }
         }
+
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        if (keystate[SDL_SCANCODE_KP_ENTER] || keystate[SDL_SCANCODE_RETURN])
+        {
+            is_in_menu_ = false;
+            in_action = true;
+            return;
+        }
+        else if (keystate[SDL_SCANCODE_ESCAPE])
+        {
+            quit = true;
+            is_in_menu_ = false;
+            return;
+        }
+        SDL_Delay(ms_lock);
     }
+}
+
+void MainMenu::update_display(SDL_Renderer *screen, bool has_won)
+{
+    if (SDL_RenderClear(screen))
+    {
+        printf("Err while clearing render menu: %s\n", SDL_GetError());
+    }
+
+    if (has_won)
+    {
+        DrawingFunctions::DrawBackground(screen, win_bg_, 0.0f, 0.0f, 1);
+    }
+    else
+    {
+        DrawingFunctions::DrawBackground(screen, background_, 0.0f, 0.0f, 1);
+    }
+    SDL_RenderPresent(screen);
+}
+
+void MainMenu::show(SDL_Renderer *screen, bool &in_action, bool &quit, bool has_won)
+{
+    update_display(screen, has_won);
+
+    handle_events(in_action, quit);
 }

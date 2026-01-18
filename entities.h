@@ -64,10 +64,15 @@ public:
 
     void update(Player &p, const float dt);
 
+    // setters
+    void recive_damage(int val);
+
     // getters
+    int get_health() { return health_;};
     animation_t get_animation() { return anim_; };
     SDL_Texture *get_sprite_sheet() { return anim_.sprite_sheet; };
     SDL_RendererFlip GetFlipState() { return flip_; };
+    bool get_status() { return is_alive_;};
 };
 
 class StaticObject : public Entity
