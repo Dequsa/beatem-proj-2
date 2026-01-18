@@ -51,13 +51,16 @@ namespace MovementFunctions
         }
     }
 
-    void move_object_y(float velocity, float &y, float &scale, direction_t current_direction)
+    void scale_object(float &y, float &scale)
     {
-
         float floor_size = REAL_FLOOR_SIZE * CameraConstants::BACKGROUND_SIZE_RATIO;
         float scale_step = (MAX_SIZE - MIN_SIZE) / floor_size;
         float scale_progress = y - FLOOR_START_Y; // progress tracking
+        scale = (scale_step * scale_progress) + MIN_SIZE;
+    }
 
+    void move_object_y(float velocity, float &y, float &scale, direction_t current_direction)
+    {
         switch (current_direction)
         {
         case direction_t::DIRECTION_UP:
@@ -70,11 +73,13 @@ namespace MovementFunctions
             return;
         }
         // scale change with progress
-        scale = (scale_step * scale_progress) + MIN_SIZE;
+        
     }
 
     void move_object(float velocity, float &x, float &y, float &scale, direction_t current_direction, int w, int h, int map_w, int map_h)
     {
+        scale_object(y,scale);
+        
         if (current_direction == direction_t::DIRECTION_NONE)
         {
             return;

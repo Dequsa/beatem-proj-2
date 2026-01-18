@@ -3,7 +3,8 @@
 namespace InfoBarConstants
 {
     constexpr const char *CHARSET_PATH = "assets/bitmap/cs8x8.bmp";
-    constexpr const char *TITLE = "Player health:";
+    constexpr const char *TITLE_HEALTH = "Player health: %d";
+    constexpr const char *TITLE_TIME = "Time survived: %0.fs";
     constexpr const char *CONTROLS = "\x18 - up | \x19 - down | \x1A - left | \x1B - right | \x5A - LIGHT ATTACK | \x58 - HEAVY ATTACK";
 }
 
@@ -31,7 +32,6 @@ public:
     InfoBar(position_t pos, dimensions_t size, SDL_Renderer *renderer);
     ~InfoBar();
 
-    // draw info bar on the screen
     void display_infobar(SDL_Renderer *renderer);
 
     void update_infobar(const int player_health, const int enemy_health, float delta_time, SDL_Renderer *renderer);

@@ -21,7 +21,7 @@ Enemy::Enemy(int id, float x, float y, SDL_Renderer *screen) : Entity(id, x, y, 
                                                                flip_(SDL_FLIP_NONE)
 {
 
-    anim_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, EnemyConstants::SPRITE_PATH);
+    anim_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, EnemyConstants::SPRITE_PATH, nullptr, nullptr);
 
     // get sprite size
     int h = 0;

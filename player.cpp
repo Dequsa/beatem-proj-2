@@ -7,7 +7,7 @@
 // Player class initialization
 Player::Player(SDL_Renderer *screen) : animations_{},
                                        type_(type_t::ENTITY_PLAYER),
-                                       position_{utility::SCREEN_HEIGHT / 4.0f, utility::SCREEN_WIDTH / 4.0f, 0.0f},
+                                       position_(PlayerConstants::spawn_point),
                                        health_(100),
                                        current_direction_(direction_t::DIRECTION_NONE),
                                        flip_state_(SDL_FLIP_NONE),
@@ -22,14 +22,14 @@ Player::Player(SDL_Renderer *screen) : animations_{},
     size_.width = PlayerConstants::SPRITE_WIDTH * scale_;
 
     // animation initialization
-    animations_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH);
+    animations_.sprite_sheet = InGameManagers::LoadSpriteSheet(screen, PlayerConstants::SPRITE_PATH, nullptr, nullptr);
 
     animations_.total_frames = new int[PlayerConstants::ANIMATION_COUNT];
 
     animations_.frame_height = PlayerConstants::SPRITE_HEIGHT;
     animations_.frame_width = PlayerConstants::SPRITE_WIDTH;
 
-    animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 30;
+    animations_.frame_duration = (1000 / utility::MONITOR_REFRESH_RATE) * 10;
     animations_.current_frame = 0;
     animations_.current_action = ActionSheet::walk_up;
 

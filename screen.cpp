@@ -57,7 +57,6 @@ bool screen_create_window(screen_t *screen)
     return success;
 }
 
-
 void close(screen_t *screen)
 {
     // destroy the window
@@ -73,36 +72,30 @@ void screen_create(screen_t *screen)
     {
         if (screen_create_window(screen))
         {
-           return;
+            return;
         }
     }
 }
 
 namespace MainMenu
 {
-    SDL_Texture *load_background()
+    constexpr const char *FILE_PATH = "assets/sprites/objects/sprite_entity_0.bmp";
+    void show(SDL_Renderer *screen, bool &in_action)
     {
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        in_action = false;
+        bool is_in_menu = true; // until player clicks ENTER
 
-    }
-
-    SDL_Texture *load_sprite()
-    {
-        
-    }
-
-    void show(SDL_Event *e)
-    {
-        bool is_in_menu = (e->type != SDLK_KP_ENTER); // until player clicks ENTER
-
-        SDL_Texture *background = load_background();
-        SDL_Texture *sprite = load_sprite();
+        SDL_Texture *background;
+        SDL_Texture *sprite = InGameManagers::LoadSpriteSheet(screen, FILE_PATH, nullptr, nullptr);
 
         while (is_in_menu)
         {
-            // background
-
-            // sprite with click enter to continue
+            if (keystate[SDL_SCANCODE_KP_ENTER])
+            {
+                is_in_menu = false;
+                SDL_Delay(1000);
+            }
         }
-
     }
 }

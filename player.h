@@ -6,7 +6,7 @@
 namespace PlayerConstants
 {
     constexpr const char* DEFAULT_NAME = "Brawler";
-    constexpr float WALKING_SPEED = 0.20f;
+    constexpr float WALKING_SPEED = 0.6f;
     constexpr float RUNNING_SPEED = 3.0f;
     constexpr int NAME_MAX_LENGTH = 128;
     constexpr const char* SPRITE_PATH = "assets/sprites/player/character-spritesheet.bmp";
@@ -14,6 +14,7 @@ namespace PlayerConstants
     constexpr int SPRITE_HEIGHT = 64;
     constexpr float SPRITE_SCALE = 5.0f;
     constexpr int ANIMATION_COUNT = 64;
+    constexpr position_t spawn_point = {200.0f, 1200.0f};
 }
 
 class Player

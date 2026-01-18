@@ -11,7 +11,7 @@ namespace EnemyConstants
 {
     constexpr int MAX_HEALTH = 100;
     constexpr int TOTAL_FRAMES_ANIM = 5;
-    constexpr const char *SPRITE_PATH = "assets/sprites/player/player_spritesheet.bmp";
+    constexpr const char *SPRITE_PATH = "assets/sprites/player/sprite_player_1.bmp";
     constexpr int SPRITE_WIDTH = 195;
     constexpr int SPRITE_HEIGHT = 396;
 }

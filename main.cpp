@@ -11,17 +11,27 @@
 #include "camera.h"
 #include "infobar.h"
 
-void handle_event(SDL_Event *e, bool *quit, Player &player)
+void handle_event(SDL_Event *e, bool &quit, bool &game_on, Player &player)
 {
+	SDL_Keycode key = e->key.keysym.sym;
 	switch (e->type)
 	{
 	case SDL_QUIT:
-		*quit = true;
+		quit = true;
+		game_on = false;
 		break;
 	case SDL_KEYDOWN:
-		if (e->key.keysym.sym == SDLK_ESCAPE)
-			*quit = true;
-
+		switch (key)
+		{
+		case SDLK_ESCAPE:
+			quit = true;
+			game_on = false;
+			SDL_Quit();
+			break;
+		case SDLK_n:
+			game_on = false;
+			break;
+		}
 		break;
 	}
 }
@@ -62,60 +72,69 @@ void calculate_delta_time(float &delta_time, Uint64 &last_time, const Uint64 PC_
 int main(int argc, char *argv[])
 {
 	screen_t screen{};
-
-	// create window
-	screen_create(&screen);
-
-	// initialization of classes
-	InfoBar infobar({0.0f, 0.0f}, {utility::SCREEN_WIDTH, 26}, screen.game_renderer);
-	Camera camera(0.0f, -950.0f, 1.3f, PlayerConstants::WALKING_SPEED);
-	Map game_map(screen.game_renderer, utility::MAP_PATH);
-	Player player(screen.game_renderer);
-	Enemy enemy(1, 800.0f, 900.0f, screen.game_renderer);
-
-	SDL_Event e;
 	bool quit = false;
-
-	Uint64 last_time = SDL_GetPerformanceCounter();
-	const Uint64 PC_FREQ = SDL_GetPerformanceFrequency();
-	int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
-	float delta_time = 0.0f;
+	
 
 	while (!quit)
 	{
 
-		calculate_delta_time(delta_time, last_time, PC_FREQ, desired_frame_time);
+		// create window
+		screen_create(&screen);
 
-		SDL_RenderClear(screen.game_renderer);
+		// initialization of classes
+		InfoBar infobar({0.0f, 0.0f}, {utility::SCREEN_WIDTH, 26}, screen.game_renderer);
+		Camera camera(0.0f, -950.0f, 1.3f, PlayerConstants::WALKING_SPEED);
+		Map game_map(screen.game_renderer, utility::MAP_PATH);
+		Player player(screen.game_renderer);
+		Enemy enemy(1, 800.0f, 900.0f, screen.game_renderer);
 
-		// SDL event handler
-		while (SDL_PollEvent(&e))
+		SDL_Event e;
+
+		Uint64 last_time = SDL_GetPerformanceCounter();
+		const Uint64 PC_FREQ = SDL_GetPerformanceFrequency();
+		int desired_frame_time = 1000 / utility::MONITOR_REFRESH_RATE; // in milliseconds
+		float delta_time = 0.0f;
+
+		bool in_action = true;
+
+		//MainMenu::show(screen.game_renderer, in_action);
+
+		while (in_action)
 		{
-			handle_event(&e, &quit, player);
+
+			calculate_delta_time(delta_time, last_time, PC_FREQ, desired_frame_time);
+
+			SDL_RenderClear(screen.game_renderer);
+
+			// SDL event handler
+			while (SDL_PollEvent(&e))
+			{
+				handle_event(&e, quit, in_action, player);
+			}
+
+			// player movement
+			player.move(e, delta_time, camera.get_state(), game_map.get_width(), game_map.get_height());
+
+			// camera movement
+			camera.update(player.get_position(), game_map.get_width(), game_map.get_height());
+
+			// entity movement
+			enemy.update(player, delta_time);
+
+			// draw background
+			DrawingFunctions::DrawBackground(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, CameraConstants::BACKGROUND_SIZE_RATIO);
+
+			// draw player sprite
+			DrawingFunctions::DrawFrame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, player.get_scale(), player.get_flip_state(),
+										camera.get_position().x, camera.get_position().y,
+										player.get_animation().frame_height, player.get_animation().frame_width,
+										player.get_animation().current_frame, player.get_current_action(), 0.0f);
+
+			// draw infobar
+			infobar.update_infobar(player.get_health(), 0.0f, delta_time, screen.game_renderer);
+
+			SDL_RenderPresent(screen.game_renderer);
 		}
-
-		// player movement
-		player.move(e, delta_time, camera.get_state(), game_map.get_width(), game_map.get_height());
-
-		// camera movement
-		camera.update(player.get_position(), game_map.get_width(), game_map.get_height());
-
-		// entity movement
-		enemy.update(player, delta_time);
-
-		// draw background
-		DrawingFunctions::DrawBackground(screen.game_renderer, game_map.get_map_texture(), camera.get_position().x, camera.get_position().y, CameraConstants::BACKGROUND_SIZE_RATIO);
-
-		// draw player sprite
-		DrawingFunctions::DrawFrame(screen.game_renderer, player.get_sprite_sheet(), player.get_position().x, player.get_position().y, player.get_scale(), player.get_flip_state(),
-									camera.get_position().x, camera.get_position().y,
-									player.get_animation().frame_height, player.get_animation().frame_width,
-									player.get_animation().current_frame, player.get_current_action(), 0.0f);
-
-		// draw infobar
-		infobar.update_infobar(player.get_health(), 0.0f, delta_time, screen.game_renderer);
-
-		SDL_RenderPresent(screen.game_renderer);
 	}
 
 	// free-up everything

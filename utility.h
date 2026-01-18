@@ -34,8 +34,7 @@ namespace DrawingFunctions
 
 namespace InGameManagers
 {
-    SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path);
-    //int *w, int *h
+    SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path, int *width, int *height);
 }
 
 namespace UtilityFunctions

@@ -157,12 +157,8 @@ namespace DrawingFunctions
 
 namespace InGameManagers
 {
-	SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path)
+	SDL_Texture *LoadSpriteSheet(SDL_Renderer *screen, const char *path, int *width, int *height)
 	{
-
-		// , int *w, int *h
-
-		
 		SDL_Surface *temp_surface = SDL_LoadBMP(path);
 		SDL_Texture *new_texture = nullptr;
 
@@ -185,12 +181,20 @@ namespace InGameManagers
 			printf("err while loading sprite sheet : %s \n", SDL_GetError());
 		}
 
-		// if (SDL_QueryTexture(new_texture, NULL, NULL, w, h))
-		// {
-		// 	printf("Err while querrying texture %s\n", SDL_GetError());
-		// }
-
-		// printf("PATH: %s | W: %d | H:%d\n", path, w ,h);
+		// assign values to width height of an object
+		int w = 0;
+		int h = 0;
+		if (SDL_QueryTexture(new_texture, NULL, NULL, &w, &h))
+		{
+			printf("Err while querrying texture %s\n", SDL_GetError());
+		}
+		
+		if (width != nullptr || height != nullptr)
+		{
+			*width = w;
+			*height = h;
+		}
+		printf("PATH: %s | W: %d | H:%d\n", path, w, h);
 
 		SDL_FreeSurface(temp_surface);
 		return new_texture;
