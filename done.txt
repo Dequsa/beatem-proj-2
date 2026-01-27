@@ -1,0 +1,19 @@
+###done 100%###
+
+--obligatory    (5 pts)--
+1
+2
+3
+4
+--optional      (2.5 pts)--
+A  (1 pts)
+    a
+    b
+    c
+C (0.5 pts)
+    a
+D (1 pts)
+    a
+
+
+--overall       (7.5 pts)
